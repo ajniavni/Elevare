@@ -1,1 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Govt Job Eligibility Finder</title>
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f3f4f6; color: #1f2937; padding: 16px; min-height: 100vh; }
+    .card { background: white; max-width: 420px; margin: 0 auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    h1 { color: #1d4ed8; font-size: 20px; text-align: center; margin-bottom: 6px; }
+    p.sub { color: #6b7280; font-size: 13px; text-align: center; margin-bottom: 20px; }
+    label { display: block; font-weight: 600; font-size: 13px; margin: 12px 0 4px; color: #374151; }
+    input, select { width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; outline: none; background: #fafafa; }
+    button { width: 100%; background: #2563eb; color: white; font-weight: bold; border: none; padding: 14px; border-radius: 8px; font-size: 15px; margin-top: 20px; cursor: pointer; }
+    button:active { background: #1d4ed8; }
+    .job-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-top: 10px; }
+    .job-title { font-weight: bold; font-size: 14px; color: #1e3a8a; }
+    .job-dept { font-size: 12px; color: #4b5563; margin-top: 2px; }
+    .job-tag { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 6px; font-weight: 600; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Govt Job Eligibility Finder</h1>
+    <p class="sub">Find Central & State Govt Job Vacancies</p>
+
+    <div id="formSection">
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob" value="2003-05-15">
+
+      <label for="qual">Qualification</label>
+      <select id="qual">
+        <option value="10th Pass">10th Pass</option>
+        <option value="12th Pass">12th Pass</option>
+        <option value="ITI / Diploma">ITI / Diploma</option>
+        <option value="Graduate">Graduate</option>
+      </select>
+
+      <label for="category">Category</label>
+      <select id="category">
+        <option value="General">General / EWS</option>
+        <option value="OBC">OBC (+3 yrs relaxation)</option>
+        <option value="SC/ST">SC / ST (+5 yrs relaxation)</option>
+      </select>
+
+      <button onclick="findJobs()">Find Matching Jobs</button>
+    </div>
+
+    <div id="resultSection" class="hidden">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span id="userSummary" style="font-size:12px; font-weight:600; color:#1f2937;"></span>
+        <button onclick="goBack()" style="width:auto; padding:6px 12px; font-size:12px; background:#e5e7eb; color:#374151; margin:0;">Edit Inputs</button>
+      </div>
+      <div id="jobsContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    const jobs = [
+      { dept: "Staff Selection Commission (SSC)", title: "Multi-Tasking Staff (MTS)", qual: "10th Pass", min: 18, max: 25 },
+      { dept: "India Post", title: "Gramin Dak Sevak (GDS)", qual: "10th Pass", min: 18, max: 40 },
+      { dept: "Railway RRB", title: "Group D / Track Maintainer", qual: "10th Pass", min: 18, max: 33 },
+      { dept: "Staff Selection Commission (SSC)", title: "CHSL (LDC / DEO)", qual: "12th Pass", min: 18, max: 27 },
+      { dept: "State Police Dept", title: "Police Constable", qual: "12th Pass", min: 18, max: 25 },
+      { dept: "Railway RRB", title: "Assistant Loco Pilot (ALP)", qual: "ITI / Diploma", min: 18, max: 33 },
+      { dept: "Staff Selection Commission (SSC)", title: "CGL Executive Officers", qual: "Graduate", min: 18, max: 30 },
+      { dept: "State Bank of India (SBI)", title: "Junior Associate (Clerk)", qual: "Graduate", min: 20, max: 28 }
+    ];
+
+    function findJobs() {
+      const dobVal = document.getElementById('dob').value;
+      const qualVal = document.getElementById('qual').value;
+      const catVal = document.getElementById('category').value;
+
+      if(!dobVal) return alert('Please enter Date of Birth');
+
+      const dob = new Date(dobVal);
+      const now = new Date();
+      let age = now.getFullYear() - dob.getFullYear();
+      
+      let relax = 0;
+      if(catVal === 'OBC') relax = 3;
+      if(catVal === 'SC/ST') relax = 5;
+
+      const filtered = jobs.filter(j => j.qual === qualVal && age >= j.min && age <= (j.max + relax));
+
+      document.getElementById('userSummary').innerText = `Age: ${age} yrs | ${qualVal}`;
+      const container = document.getElementById('jobsContainer');
+      container.innerHTML = '';
+
+      if(filtered.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#6b7280; font-size:13px; margin-top:16px;">No eligible vacancies found for this age & qualification.</p>';
+      } else {
+        filtered.forEach(j => {
+          container.innerHTML += `
+            <div class="job-item">
+              <div class="job-title">${j.title}</div>
+              <div class="job-dept">${j.dept} • Eligible</div>
+              <span class="job-tag">${j.qual}</span>
+            </div>
+          `;
+        });
+      }
+
+      document.getElementById('formSection').classList.add('hidden');
+      document.getElementById('resultSection').classList.remove('hidden');
+    }
+
+    function goBack() {
+      document.getElementById('resultSection').classList.add('hidden');
+      document.getElementById('formSection').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
 
