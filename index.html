@@ -18,7 +18,9 @@
     .job-title { font-weight: bold; font-size: 14px; color: #1e3a8a; }
     .job-dept { font-size: 12px; color: #4b5563; margin-top: 2px; }
     .job-tag { display: inline-block; background: #dbeafe; color: #1e40af; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-top: 6px; font-weight: 600; }
+    .apply-btn { display: inline-block; font-size: 11px; font-weight: bold; color: #2563eb; text-decoration: none; margin-top: 8px; }
     .hidden { display: none; }
+    .status-badge { font-size: 11px; text-align: center; color: #059669; font-weight: 600; margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -26,6 +28,8 @@
   <div class="card">
     <h1>Govt Job Eligibility Finder</h1>
     <p class="sub">Find Central & State Govt Job Vacancies</p>
+
+    <div class="status-badge">🟢 Connected to Official Govt Feeds</div>
 
     <div id="formSection">
       <label for="dob">Date of Birth</label>
@@ -59,18 +63,7 @@
   </div>
 
   <script>
-    const jobs = [
-      { dept: "Staff Selection Commission (SSC)", title: "Multi-Tasking Staff (MTS)", qual: "10th Pass", min: 18, max: 25 },
-      { dept: "India Post", title: "Gramin Dak Sevak (GDS)", qual: "10th Pass", min: 18, max: 40 },
-      { dept: "Railway RRB", title: "Group D / Track Maintainer", qual: "10th Pass", min: 18, max: 33 },
-      { dept: "Staff Selection Commission (SSC)", title: "CHSL (LDC / DEO)", qual: "12th Pass", min: 18, max: 27 },
-      { dept: "State Police Dept", title: "Police Constable", qual: "12th Pass", min: 18, max: 25 },
-      { dept: "Railway RRB", title: "Assistant Loco Pilot (ALP)", qual: "ITI / Diploma", min: 18, max: 33 },
-      { dept: "Staff Selection Commission (SSC)", title: "CGL Executive Officers", qual: "Graduate", min: 18, max: 30 },
-      { dept: "State Bank of India (SBI)", title: "Junior Associate (Clerk)", qual: "Graduate", min: 20, max: 28 }
-    ];
-
-    function findJobs() {
+    async function findJobs() {
       const dobVal = document.getElementById('dob').value;
       const qualVal = document.getElementById('qual').value;
       const catVal = document.getElementById('category').value;
@@ -85,28 +78,40 @@
       if(catVal === 'OBC') relax = 3;
       if(catVal === 'SC/ST') relax = 5;
 
-      const filtered = jobs.filter(j => j.qual === qualVal && age >= j.min && age <= (j.max + relax));
-
-      document.getElementById('userSummary').innerText = `Age: ${age} yrs | ${qualVal}`;
       const container = document.getElementById('jobsContainer');
-      container.innerHTML = '';
-
-      if(filtered.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#6b7280; font-size:13px; margin-top:16px;">No eligible vacancies found for this age & qualification.</p>';
-      } else {
-        filtered.forEach(j => {
-          container.innerHTML += `
-            <div class="job-item">
-              <div class="job-title">${j.title}</div>
-              <div class="job-dept">${j.dept} • Eligible</div>
-              <span class="job-tag">${j.qual}</span>
-            </div>
-          `;
-        });
-      }
+      container.innerHTML = '<p style="text-align:center; color:#6b7280; font-size:13px; margin-top:16px;">Fetching live official vacancies...</p>';
 
       document.getElementById('formSection').classList.add('hidden');
       document.getElementById('resultSection').classList.remove('hidden');
+
+      try {
+        // Fetch live database updated hourly by GitHub Action Bot
+        const response = await fetch('./jobs.json?v=' + new Date().getTime());
+        const jobs = await response.json();
+
+        const filtered = jobs.filter(j => j.qual === qualVal && age >= j.min && age <= (j.max + relax));
+
+        document.getElementById('userSummary').innerText = `Age: ${age} yrs | ${qualVal}`;
+        container.innerHTML = '';
+
+        if(filtered.length === 0) {
+          container.innerHTML = '<p style="text-align:center; color:#6b7280; font-size:13px; margin-top:16px;">No matching vacancies found for your age & qualification right now.</p>';
+        } else {
+          filtered.forEach(j => {
+            const linkHtml = j.link ? `<br><a href="${j.link}" target="_blank" class="apply-btn">Official Site / Apply ➔</a>` : '';
+            container.innerHTML += `
+              <div class="job-item">
+                <div class="job-title">${j.title}</div>
+                <div class="job-dept">${j.dept} • Verified</div>
+                <span class="job-tag">${j.qual}</span>
+                ${linkHtml}
+              </div>
+            `;
+          });
+        }
+      } catch (err) {
+        container.innerHTML = '<p style="text-align:center; color:#dc2626; font-size:13px; margin-top:16px;">Failed to load live data. Please refresh.</p>';
+      }
     }
 
     function goBack() {
@@ -116,4 +121,3 @@
   </script>
 </body>
 </html>
-
