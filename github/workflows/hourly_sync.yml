@@ -1,0 +1,29 @@
+name: Hourly Govt Job Sync Bot
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs automatically every 1 hour
+  workflow_dispatch: # Allows manual trigger anytime
+
+jobs:
+  update-jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Fetch Official Updates
+        run: python fetch_jobs.py
+
+      - name: Commit & Push Updated jobs.json
+        run: |
+          git config --global user.name "GovtJobBot"
+          git config --global user.email "bot@elevare.app"
+          git add jobs.json
+          git commit -m "Auto-update live government job listings" || exit 0
+          git push
