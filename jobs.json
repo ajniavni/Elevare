@@ -1,0 +1,50 @@
+[
+  {
+    "dept": "Staff Selection Commission (SSC)",
+    "title": "Multi-Tasking Staff (MTS)",
+    "qual": "10th Pass",
+    "min": 18,
+    "max": 25,
+    "link": "https://ssc.gov.in"
+  },
+  {
+    "dept": "India Post",
+    "title": "Gramin Dak Sevak (GDS)",
+    "qual": "10th Pass",
+    "min": 18,
+    "max": 40,
+    "link": "https://indiapostgdsonline.gov.in"
+  },
+  {
+    "dept": "Railway Recruitment Board (RRB)",
+    "title": "Group D / Track Maintainer",
+    "qual": "10th Pass",
+    "min": 18,
+    "max": 33,
+    "link": "https://indianrailways.gov.in"
+  },
+  {
+    "dept": "Staff Selection Commission (SSC)",
+    "title": "CHSL (LDC / DEO)",
+    "qual": "12th Pass",
+    "min": 18,
+    "max": 27,
+    "link": "https://ssc.gov.in"
+  },
+  {
+    "dept": "Railway Recruitment Board (RRB)",
+    "title": "Assistant Loco Pilot (ALP)",
+    "qual": "ITI / Diploma",
+    "min": 18,
+    "max": 33,
+    "link": "https://indianrailways.gov.in"
+  },
+  {
+    "dept": "Staff Selection Commission (SSC)",
+    "title": "CGL Executive Officers",
+    "qual": "Graduate",
+    "min": 18,
+    "max": 30,
+    "link": "https://ssc.gov.in"
+  }
+]
