@@ -53,10 +53,10 @@
                 const card = document.createElement('div');
                 card.className = 'bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-2';
                 card.innerHTML = `
-                    <span class="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-700 rounded">${job.dept}</span>
+                    <span class="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-700 rounded">${job.dept || 'Government Job'}</span>
                     <h3 class="font-bold text-slate-900">${job.title}</h3>
-                    <p class="text-sm text-slate-600">Qualification: <b>${job.qual}</b></p>
-                    <p class="text-sm text-red-600 font-semibold">Last Date: ${job.last_date}</p>
+                    <p class="text-sm text-slate-600">Qualification: <b>${job.qual || 'Check Notice'}</b></p>
+                    <p class="text-sm text-red-600 font-semibold">Last Date: ${job.last_date || 'Check Official Notice'}</p>
                     <a href="${job.link}" target="_blank" class="inline-block text-sm text-blue-600 font-medium hover:underline">Official Notification & Apply →</a>
                 `;
                 container.appendChild(card);
