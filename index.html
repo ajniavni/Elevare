@@ -198,7 +198,6 @@
         .del-btn { background: #d9534f; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; width: auto; margin: 0; }
         .del-btn:hover { background: #c9302c; }
         
-        /* Stylish Offer Banner */
         .offer-banner {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             color: white;
@@ -213,7 +212,6 @@
             border: 2px dashed #fff;
         }
 
-        /* Modal Styles for QR Code */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -238,6 +236,7 @@
             margin: 15px auto;
             border: 4px solid #f1f1f1;
             border-radius: 8px;
+            display: block;
         }
     </style>
 </head>
@@ -306,7 +305,7 @@
     <button onclick="savePin()">SAVE PIN & COMPLETE PROFILE</button>
 </div>
 
-<!-- STEP 3: COMPLETE PROFILE FORM (NO SALUTATIONS, FULL NAME STRUCTURE) -->
+<!-- STEP 3: COMPLETE PROFILE FORM (NO SALUTATIONS, FULL NAME STRUCTURE & HOMESTATE) -->
 <div id="stepProfileForm" class="container step-container">
     <h3>COMPLETE STUDENT PROFILE</h3>
     <p style="color: var(--text-muted); font-size: 13px;">PROVIDE YOUR PROFILE DETAILS TO GENERATE YOUR PERMANENT ELEVARE ID.</p>
@@ -383,8 +382,28 @@
         <input type="text" id="pgSubject" placeholder="ENTER SUBJECT">
     </div>
 
-    <label for="pincode">PINCODE *</label>
-    <input type="text" id="pincode" maxlength="6" required>
+    <div class="row">
+        <div>
+            <label for="homeState">HOMESTATE *</label>
+            <select id="homeState" required>
+                <option value="">SELECT STATE</option>
+                <option value="ANDHRA PRADESH">ANDHRA PRADESH</option>
+                <option value="DELHI">DELHI</option>
+                <option value="HARYANA">HARYANA</option>
+                <option value="KARNATAKA">KARNATAKA</option>
+                <option value="MAHARASHTRA">MAHARASHTRA</option>
+                <option value="PUNJAB">PUNJAB</option>
+                <option value="TAMIL NADU">TAMIL NADU</option>
+                <option value="UTTAR PRADESH">UTTAR PRADESH</option>
+                <option value="WEST BENGAL">WEST BENGAL</option>
+                <option value="OTHER">OTHER STATE</option>
+            </select>
+        </div>
+        <div>
+            <label for="pincode">PINCODE *</label>
+            <input type="text" id="pincode" maxlength="6" required>
+        </div>
+    </div>
 
     <label for="address">COMPLETE ADDRESS *</label>
     <textarea id="address" rows="3" required></textarea>
@@ -402,7 +421,7 @@
         <button onclick="logoutUser()" style="width: auto; padding: 6px 12px; font-size: 11px; background: #dc3545; margin:0;">LOGOUT</button>
     </div>
 
-    <!-- Stylish Offer Banner for Pricing -->
+    <!-- Stylish Offer Banner -->
     <div class="offer-banner">
         🔥 SPECIAL MONTHLY OFFER BANNER 🔥<br>
         FIRST 3 APPLICATIONS @ ₹69 EACH | APPLICATIONS 4 TO 10 @ ₹49 EACH | ABOVE 10 APPLICATIONS ONLY ₹31 EACH!
@@ -410,7 +429,7 @@
 
     <label for="qualSelect">FILTER BY QUALIFICATION:</label>
     <select id="qualSelect" onchange="filterJobs()">
-        <option value="All">ALL QUALIFICATIONS</option>
+        <option value="All">ALL QUALIFICATIONS (UPTO YOUR HIGHEST QUALIFICATION)</option>
         <option value="8th Pass">8TH PASS</option>
         <option value="10th Pass">10TH PASS</option>
         <option value="11th Pass">11TH PASS</option>
@@ -441,8 +460,8 @@
         <h3>SCAN QR CODE TO PAY</h3>
         <p style="font-size: 12px; color: var(--text-muted);">SCAN USING ANY UPI APP (GOOGLE PAY, PHONEPE, PAYTM)</p>
         
-        <!-- Standard UPI QR Code placeholder image representing QR payment -->
-        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9796732506@paytm&pn=Elevare&cu=INR" alt="UPI QR Code" class="qr-image">
+        <!-- Dynamic QR Code Container -->
+        <img id="qrImageElement" src="" alt="UPI QR Code" class="qr-image">
         
         <p id="qrPriceTag" style="font-weight: bold; color: var(--primary); font-size: 16px; margin: 10px 0;"></p>
         
@@ -453,7 +472,23 @@
 <script>
     let allJobs = [];
     let currentRegPhone = "";
+    
+    // CONFIGURATION
     const DESIGNATED_WHATSAPP_NUMBER = "919796732506"; 
+    const UPI_ID = "9796732506@paytm"; 
+    const BUSINESS_NAME = "Elevare";
+
+    // Qualification hierarchy ranking for restriction logic
+    const qualHierarchy = {
+        "8TH PASS": 1,
+        "10TH PASS": 2,
+        "11TH PASS": 3,
+        "12TH PASS": 4,
+        "ITI / DIPLOMA": 5,
+        "GRADUATION": 6,
+        "GRADUATE / ANY DEGREE": 6,
+        "POST GRADUATION": 7
+    };
 
     window.onload = function() {
         const loggedInId = localStorage.getItem("elevare_logged_in_id");
@@ -573,10 +608,11 @@
         const mSurname = document.getElementById('motherSurname').value.trim().toUpperCase();
 
         const qual = document.getElementById('highestQual').value;
+        const homeState = document.getElementById('homeState').value;
         const pincode = document.getElementById('pincode').value.trim();
         const address = document.getElementById('address').value.trim().toUpperCase();
 
-        if (!fname || !surname || !fFname || !fSurname || !mFname || !mSurname || !qual || !pincode || !address) {
+        if (!fname || !surname || !fFname || !fSurname || !mFname || !mSurname || !qual || !homeState || !pincode || !address) {
             alert("PLEASE FILL IN ALL MANDATORY (*) PROFILE FIELDS.");
             return;
         }
@@ -603,6 +639,7 @@
             pwd: document.getElementById('pwdStatus').value,
             qualification: qual,
             pgSubject: document.getElementById('pgSubject').value.trim().toUpperCase(),
+            homeState: homeState,
             pincode: pincode,
             address: address,
             registeredAt: new Date().toISOString()
@@ -629,11 +666,100 @@
             .then(res => res.json())
             .then(data => {
                 allJobs = data;
-                displayJobs(allJobs);
+                processAndDisplayJobs();
             })
             .catch(err => {
                 document.getElementById('resultsContainer').innerHTML = '<p style="color:red; text-align:center;">COULD NOT LOAD JOB LISTINGS.</p>';
             });
+    }
+
+    function getQualRank(qualStr) {
+        if (!qualStr) return 1;
+        const clean = qualStr.toUpperCase().trim();
+        for (let key in qualHierarchy) {
+            if (clean.includes(key)) return qualHierarchy[key];
+        }
+        return 1;
+    }
+
+    function getJobPriorityScore(job, studentState) {
+        const type = (job.type || "").toUpperCase();
+        const jobState = (job.state || "").toUpperCase();
+        const stState = (studentState || "").toUpperCase();
+
+        // 1. Central Jobs first
+        if (type === "CENTRAL" || (job.dept || "").toUpperCase().includes("CENTRAL") || (job.title || "").toUpperCase().includes("UPSC") || (job.title || "").toUpperCase().includes("SSC")) {
+            return 1;
+        }
+        // 2. Homestate jobs second
+        if (jobState && jobState === stState) {
+            return 2;
+        }
+        // 3. Other state jobs & PSUs third
+        return 3;
+    }
+
+    function processAndDisplayJobs(filterQual = 'All') {
+        const studentId = localStorage.getItem("elevare_logged_in_id");
+        let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+        const student = studentsList.find(s => s.elevId === studentId);
+
+        if (!student) return;
+
+        const studentQualRank = getQualRank(student.qualification);
+
+        // RULE 1: Do not show jobs greater than student's highest qualification
+        let eligibleJobs = allJobs.filter(job => {
+            const jobQualRank = getQualRank(job.qual);
+            return jobQualRank <= studentQualRank;
+        });
+
+        // Apply dropdown filter if selected
+        if (filterQual !== 'All') {
+            eligibleJobs = eligibleJobs.filter(j => j.qual.toUpperCase().trim().includes(filterQual.toUpperCase().trim()));
+        }
+
+        // RULE 2: Systematic Sorting (Central jobs -> Homestate jobs -> Other state/PSUs)
+        eligibleJobs.sort((a, b) => {
+            let scoreA = getJobPriorityScore(a, student.homeState);
+            let scoreB = getJobPriorityScore(b, student.homeState);
+            return scoreA - scoreB;
+        });
+
+        displayJobs(eligibleJobs);
+    }
+
+    function displayJobs(jobs) {
+        const container = document.getElementById('resultsContainer');
+        container.innerHTML = '';
+        if (jobs.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">NO ELIGIBLE JOB LISTINGS FOUND MATCHING YOUR QUALIFICATION.</p>';
+            return;
+        }
+        jobs.forEach(job => {
+            const card = document.createElement('div');
+            card.className = 'job-card';
+            card.innerHTML = `
+                <div class="dept">${job.dept}</div>
+                <div class="title">${job.title}</div>
+                <div class="details"><strong>QUALIFICATION REQUIRED:</strong> ${job.qual}</div>
+                <div class="details"><strong>AGE LIMIT:</strong> ${job.min} - ${job.max} YEARS</div>
+                <div class="details"><strong>LAST DATE:</strong> <span class="last-date">${job.last_date}</span></div>
+                <div style="margin-top: 10px;">
+                    <a href="${job.link}" target="_blank" style="display:block; text-align:center; background:#0056b3; padding:8px; color:white; text-decoration:none; border-radius:6px; font-weight:bold; font-size:12px; margin-bottom:8px;">OFFICIAL NOTICE →</a>
+                </div>
+                <div class="action-btn-group">
+                    <button onclick="openQrPaymentModal('${job.title.replace(/'/g, "\\'")}')" class="qr-pay-btn">PAY VIA QR</button>
+                    <button onclick="triggerWhatsAppApplication('${job.title.replace(/'/g, "\\'")}', '${job.dept.replace(/'/g, "\\'")}', '${job.link}')" class="whatsapp-apply-btn">APPLY VIA WHATSAPP</button>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function filterJobs() {
+        const qual = document.getElementById('qualSelect').value;
+        processAndDisplayJobs(qual);
     }
 
     function getApplicationPriceAndCount(studentId) {
@@ -693,7 +819,7 @@
             alert("PLEASE LOGIN FIRST.");
             return;
         }
-        // Preview price calculation for current application
+
         const now = new Date();
         const yearMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
         const storageKey = `apps_count_${studentId}_${yearMonthKey}`;
@@ -703,50 +829,16 @@
         if (currentCount > 3 && currentCount <= 10) price = 49;
         else if (currentCount > 10) price = 31;
 
+        const upiString = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(BUSINESS_NAME)}&am=${price}&cu=INR`;
+        const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiString)}`;
+        
+        document.getElementById('qrImageElement').src = qrApiUrl;
         document.getElementById('qrPriceTag').innerText = `AMOUNT TO PAY: ₹${price} (APP #${currentCount})`;
         document.getElementById('qrModal').style.display = 'flex';
     }
 
     function closeQrModal() {
         document.getElementById('qrModal').style.display = 'none';
-    }
-
-    function displayJobs(jobs) {
-        const container = document.getElementById('resultsContainer');
-        container.innerHTML = '';
-        if (jobs.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">NO LISTINGS AVAILABLE.</p>';
-            return;
-        }
-        jobs.forEach(job => {
-            const card = document.createElement('div');
-            card.className = 'job-card';
-            card.innerHTML = `
-                <div class="dept">${job.dept}</div>
-                <div class="title">${job.title}</div>
-                <div class="details"><strong>QUALIFICATION:</strong> ${job.qual}</div>
-                <div class="details"><strong>AGE LIMIT:</strong> ${job.min} - ${job.max} YEARS</div>
-                <div class="details"><strong>LAST DATE:</strong> <span class="last-date">${job.last_date}</span></div>
-                <div style="margin-top: 10px;">
-                    <a href="${job.link}" target="_blank" style="display:block; text-align:center; background:#0056b3; padding:8px; color:white; text-decoration:none; border-radius:6px; font-weight:bold; font-size:12px; margin-bottom:8px;">OFFICIAL NOTICE →</a>
-                </div>
-                <div class="action-btn-group">
-                    <button onclick="openQrPaymentModal('${job.title.replace(/'/g, "\\'")}')" class="qr-pay-btn">PAY VIA QR</button>
-                    <button onclick="triggerWhatsAppApplication('${job.title.replace(/'/g, "\\'")}', '${job.dept.replace(/'/g, "\\'")}', '${job.link}')" class="whatsapp-apply-btn">APPLY VIA WHATSAPP</button>
-                </div>
-            `;
-            container.appendChild(card);
-        });
-    }
-
-    function filterJobs() {
-        const qual = document.getElementById('qualSelect').value;
-        if (qual === 'All') {
-            displayJobs(allJobs);
-            return;
-        }
-        const filtered = allJobs.filter(j => j.qual.toLowerCase().trim() === qual.toLowerCase().trim());
-        displayJobs(filtered);
     }
 
     function openAdminPanel() {
@@ -785,13 +877,13 @@
         }
 
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += "ElevareID,Phone,FirstName,MiddleName,Surname,FatherFirstName,FatherSurname,MotherFirstName,MotherSurname,Category,PWD,Qualification,Pincode,Address,RegisteredAt\r\n";
+        csvContent += "ElevareID,Phone,FirstName,MiddleName,Surname,FatherFirstName,FatherSurname,MotherFirstName,MotherSurname,Category,PWD,Qualification,HomeState,Pincode,Address,RegisteredAt\r\n";
 
         studentsList.forEach(s => {
             let row = [
                 s.elevId, s.phone, s.firstName, s.middleName, s.surname,
                 s.fatherFirstName, s.fatherSurname, s.motherFirstName, s.motherSurname,
-                s.category, s.pwd, s.qualification, s.pincode, `"${s.address}"`, s.registeredAt
+                s.category, s.pwd, s.qualification, s.homeState, s.pincode, `"${s.address}"`, s.registeredAt
             ].join(",");
             csvContent += row + "\r\n";
         });
