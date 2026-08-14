@@ -19,17 +19,17 @@ PSUS = [
 ]
 
 def fetch_job_details(job_url):
-    """Visits individual job pages to extract exact last dates and direct official/PDF links"""
+    """Parses FreeJobAlert subpages for exact last dates and official notification links"""
     try:
         req = urllib.request.Request(job_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
-        with urllib.request.urlopen(req, timeout=8) as response:
+        with urllib.request.urlopen(req, timeout=5) as response:
             html = response.read().decode('utf-8', errors='ignore')
             
             last_date_str = "Check Official Notice"
             parsed_date = None
             
-            # Target exact date patterns near closing/last date keywords
-            date_match = re.search(r'(?:last\s*date|closing\s*date|upto|before|by)[\s:\-\._<>a-z/]*(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html, re.IGNORECASE)
+            # Look for last date patterns in text/tables
+            date_match = re.search(r'(?:last\s*date|closing\s*date|upto|before|by)[^<\d]*(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html, re.IGNORECASE)
             if not date_match:
                 date_match = re.search(r'(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html)
             
@@ -44,13 +44,13 @@ def fetch_job_details(job_url):
                     except ValueError:
                         pass
 
-            # Find direct official notification link or PDF instead of redirecting back
+            # Extract direct official notification link or apply link
             official_link = job_url
             links = re.findall(r'<a[^>]+href="(https?://[^"]+)"[^>]*>([^<]+)</a>', html, re.IGNORECASE)
             for l, anchor in links:
                 l_lower = l.lower()
                 anchor_lower = anchor.lower()
-                if ('gov.in' in l_lower or 'nic.in' in l_lower or 'pdf' in l_lower or 'apply' in anchor_lower or 'notification' in anchor_lower) and 'freejobalert' not in l_lower:
+                if ('gov.in' in l_lower or 'nic.in' in l_lower or 'pdf' in l_lower or 'official' in anchor_lower or 'apply' in anchor_lower) and 'freejobalert' not in l_lower:
                     official_link = l
                     break
 
@@ -95,10 +95,9 @@ if __name__ == "__main__":
     today = date.today()
     print(f"Syncing jobs for current date: {today}")
 
-    # Reset jobs.json to clean out old unparsed entries
     active_jobs = []
-
     url = "https://www.freejobalert.com/"
+    
     try:
         req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
         with urllib.request.urlopen(req, timeout=10) as response:
@@ -114,8 +113,7 @@ if __name__ == "__main__":
                 if link not in seen_links and len(clean_title) > 10:
                     seen_links.add(link)
                     
-                    # Deep crawl up to 15 fresh listings to grab exact dates & direct links
-                    if count < 15:
+                    if count < 10:
                         last_date_str, parsed_date, direct_link = fetch_job_details(link)
                         
                         if parsed_date and parsed_date < today:
@@ -139,4 +137,4 @@ if __name__ == "__main__":
     with open("jobs.json", "w") as f:
         json.dump(active_jobs, f, indent=2)
         
-    print(f"Database successfully rebuilt. Total active listings: {len(active_jobs)}")
+    print(f"Database successfully updated. Total active listings: {len(active_jobs)}")
