@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "dept": "Government of India",
+    "title": "10th/12th/Graduate Govt Recruitment Notice 2026",
+    "qual": "8th Pass",
+    "min": 18,
+    "max": 40,
+    "last_date": "31-08-2026",
+    "link": "https://www.sarkariresult.com/"
+  },
+  {
+    "dept": "Government of India",
+    "title": "10th/12th/Graduate Govt Recruitment Notice 2026",
+    "qual": "10th Pass",
+    "min": 18,
+    "max": 40,
+    "last_date": "31-08-2026",
+    "link": "https://www.sarkariresult.com/"
+  },
+  {
+    "dept": "Government of India",
+    "title": "10th/12th/Graduate Govt Recruitment Notice 2026",
+    "qual": "12th Pass",
+    "min": 18,
+    "max": 40,
+    "last_date": "31-08-2026",
+    "link": "https://www.sarkariresult.com/"
+  },
+  {
+    "dept": "Government of India",
+    "title": "10th/12th/Graduate Govt Recruitment Notice 2026",
+    "qual": "ITI / Diploma",
+    "min": 18,
+    "max": 40,
+    "last_date": "31-08-2026",
+    "link": "https://www.sarkariresult.com/"
+  },
+  {
+    "dept": "Government of India",
+    "title": "10th/12th/Graduate Govt Recruitment Notice 2026",
+    "qual": "Graduate / Any Degree",
+    "min": 18,
+    "max": 40,
+    "last_date": "31-08-2026",
+    "link": "https://www.sarkariresult.com/"
+  }
+]
