@@ -19,7 +19,6 @@ PSUS = [
 ]
 
 def fetch_job_details(job_url):
-    """Parses Sarkari Result detail pages for exact last dates and direct apply/official links."""
     try:
         req = urllib.request.Request(job_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
         with urllib.request.urlopen(req, timeout=6) as response:
@@ -28,7 +27,6 @@ def fetch_job_details(job_url):
             last_date_str = "Check Official Notice"
             parsed_date = None
             
-            # Extract last date patterns
             date_match = re.search(r'(?:last\s*date|closing\s*date|upto|before|by|exams?\s*date)[^<\d]*(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html, re.IGNORECASE)
             if not date_match:
                 date_match = re.search(r'(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html)
@@ -44,23 +42,24 @@ def fetch_job_details(job_url):
                     except ValueError:
                         pass
 
-            # Extract direct Apply Online or Official Website link from Sarkari Result tables
             direct_link = job_url
-            all_links = re.findall(r'<a[^>]+href="(https?://[^"]+)"[^>]*>([^<]+)</a>', html, re.IGNORECASE)
+            all_links = re.findall(r'<a\s+href="([^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL | re.IGNORECASE)
             
-            # Prioritize links with anchor text containing "Apply Online" or official websites
-            for l, anchor in all_links:
-                anchor_lower = anchor.lower()
-                l_lower = l.lower()
-                if 'apply online' in anchor_lower or 'official website' in anchor_lower:
-                    if 'sarkariresult' not in l_lower:
+            for l, anchor_html in all_links:
+                anchor = re.sub(r'<[^>]+>', '', anchor_html).strip().lower()
+                if not l.startswith('http'):
+                    l = "https://www.sarkariresult.com/" + l.lstrip('/')
+                
+                if 'apply online' in anchor or 'official website' in anchor:
+                    if 'sarkariresult.com' not in l or len(l) > 30:
                         direct_link = l
                         break
             else:
-                # Fallback to any non-sarkariresult external link (gov.in or pdf)
-                for l, anchor in all_links:
+                for l, anchor_html in all_links:
+                    if not l.startswith('http'):
+                        l = "https://www.sarkariresult.com/" + l.lstrip('/')
                     l_lower = l.lower()
-                    if 'sarkariresult' not in l_lower and ('gov.in' in l_lower or 'nic.in' in l_lower or '.pdf' in l_lower):
+                    if ('gov.in' in l_lower or 'nic.in' in l_lower or '.pdf' in l_lower) and 'sarkariresult' not in l_lower:
                         direct_link = l
                         break
 
@@ -114,36 +113,42 @@ if __name__ == "__main__":
         with urllib.request.urlopen(req, timeout=10) as response:
             html = response.read().decode('utf-8', errors='ignore')
             
-            # Extract links from Sarkari Result main page job sections
-            pattern = r'<a[^>]+href="(https?://(?:www\.)?sarkariresult\.com/[^"]+)"[^>]*>([^<]+)</a>'
-            matches = re.findall(pattern, html, re.IGNORECASE)
+            matches = re.findall(r'<a\s+href="([^"]+)"[^>]*>(.*?)</a>', html, re.DOTALL | re.IGNORECASE)
             
             seen_links = set()
             count = 0
             
-            for link, title in matches:
-                clean_title = title.strip()
-                if link not in seen_links and len(clean_title) > 8 and not any(kw in clean_title.lower() for kw in ['home', 'result', 'admit card', 'sarkari', 'contact', 'privacy', 'telegram', 'whatsapp', 'app']):
-                    seen_links.add(link)
+            for link, anchor_html in matches:
+                clean_title = re.sub(r'<[^>]+>', '', anchor_html).strip()
+                
+                if not link.startswith('http'):
+                    full_link = "https://www.sarkariresult.com/" + link.lstrip('/')
+                else:
+                    full_link = link
                     
-                    if count < 25:
-                        last_date_str, parsed_date, direct_link = fetch_job_details(link)
+                if full_link not in seen_links and len(clean_title) > 5:
+                    title_lower = clean_title.lower()
+                    if any(kw in title_lower for kw in ['online form', 'recruitment', 'vacancy', 'notice', 'bharti', 'post', 'officer', 'clerk', 'constable', 'uptet', 'police']):
+                        seen_links.add(full_link)
                         
-                        if parsed_date and parsed_date < today:
-                            continue
+                        if count < 35:
+                            last_date_str, parsed_date, direct_link = fetch_job_details(full_link)
                             
-                        dept, qual = classify_job(clean_title)
-                        
-                        active_jobs.append({
-                            "dept": dept,
-                            "title": clean_title[:75],
-                            "qual": qual,
-                            "min": 18,
-                            "max": 40,
-                            "last_date": last_date_str,
-                            "link": direct_link
-                        })
-                        count += 1
+                            if parsed_date and parsed_date < today:
+                                continue
+                                
+                            dept, qual = classify_job(clean_title)
+                            
+                            active_jobs.append({
+                                "dept": dept,
+                                "title": clean_title[:75],
+                                "qual": qual,
+                                "min": 18,
+                                "max": 40,
+                                "last_date": last_date_str,
+                                "link": direct_link
+                            })
+                            count += 1
     except Exception as e:
         print(f"Scraper error: {e}")
 
