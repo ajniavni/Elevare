@@ -19,16 +19,16 @@ PSUS = [
 ]
 
 def fetch_job_details(job_url):
-    """Parses FreeJobAlert subpages for exact last dates and official notification links"""
+    """Deep crawls the page to extract exact last date and strictly avoids FreeJobAlert redirect loops by finding direct external/PDF links."""
     try:
         req = urllib.request.Request(job_url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
-        with urllib.request.urlopen(req, timeout=5) as response:
+        with urllib.request.urlopen(req, timeout=6) as response:
             html = response.read().decode('utf-8', errors='ignore')
             
             last_date_str = "Check Official Notice"
             parsed_date = None
             
-            # Look for last date patterns in text/tables
+            # Extract last date
             date_match = re.search(r'(?:last\s*date|closing\s*date|upto|before|by)[^<\d]*(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html, re.IGNORECASE)
             if not date_match:
                 date_match = re.search(r'(\d{1,2})[-/](\d{1,2})[-/](\d{2,4})', html)
@@ -44,15 +44,23 @@ def fetch_job_details(job_url):
                     except ValueError:
                         pass
 
-            # Extract direct official notification link or apply link
+            # Extract direct external official link or PDF (ignoring freejobalert links)
             official_link = job_url
-            links = re.findall(r'<a[^>]+href="(https?://[^"]+)"[^>]*>([^<]+)</a>', html, re.IGNORECASE)
-            for l, anchor in links:
+            all_links = re.findall(r'href="(https?://[^"]+)"', html, re.IGNORECASE)
+            
+            # Prioritize PDFs or government domains
+            for l in all_links:
                 l_lower = l.lower()
-                anchor_lower = anchor.lower()
-                if ('gov.in' in l_lower or 'nic.in' in l_lower or 'pdf' in l_lower or 'official' in anchor_lower or 'apply' in anchor_lower) and 'freejobalert' not in l_lower:
+                if 'freejobalert' not in l_lower and ('gov.in' in l_lower or 'nic.in' in l_lower or '.pdf' in l_lower or 'apply' in l_lower):
                     official_link = l
                     break
+            else:
+                # Fallback to any non-freejobalert link found on the page
+                for l in all_links:
+                    l_lower = l.lower()
+                    if 'freejobalert' not in l_lower and 'facebook' not in l_lower and 'twitter' not in l_lower and 'whatsapp' not in l_lower:
+                        official_link = l
+                        break
 
             return last_date_str, parsed_date, official_link
     except Exception:
@@ -61,6 +69,7 @@ def fetch_job_details(job_url):
 def classify_job(title):
     title_upper = title.upper()
     department = "Central Government"
+    
     for psu in PSUS:
         if psu in title_upper:
             department = f"PSU - {psu}"
@@ -78,13 +87,14 @@ def classify_job(title):
             elif "DEFENCE" in title_upper or "ARMY" in title_upper or "NAVY" in title_upper: department = "Defence Ministry"
             else: department = "Government of India"
 
-    if any(kw in title_upper for kw in ['ITI', 'DIPLOMA', 'POLYTECHNIC', 'NCVT', 'SCVT']):
+    # Precise qualification mapping
+    if any(kw in title_upper for kw in ['ITI', 'DIPLOMA', 'POLYTECHNIC', 'NCVT', 'SCVT', 'TECHNICIAN']):
         qualification = "ITI / Diploma"
-    elif any(kw in title_upper for kw in ['8TH', 'VIII', 'CLASS 8', 'DRIVER', 'MALI', 'PEON', 'ATTENDANT', 'SWEEPER', 'HELPER']):
+    elif any(kw in title_upper for kw in ['8TH', 'VIII', 'CLASS 8', 'DRIVER', 'MALI', 'PEON', 'ATTENDANT', 'SWEEPER', 'HELPER', 'CANTEEN']):
         qualification = "8th Pass"
-    elif any(kw in title_upper for kw in ['10TH', 'SSC', 'MATRIC']):
+    elif any(kw in title_upper for kw in ['10TH', 'SSC', 'MATRIC', 'CONSTABLE', 'GDS', 'GRAMIN DAK SEVAK', 'MTS', 'GROUP D', 'CHSL']):
         qualification = "10th Pass"
-    elif any(kw in title_upper for kw in ['12TH', 'INTER', 'HSC']):
+    elif any(kw in title_upper for kw in ['12TH', 'INTER', 'HSC', 'CLERK', 'STENO', 'ASSISTANT']):
         qualification = "12th Pass"
     else:
         qualification = "Graduate / Any Degree"
@@ -113,7 +123,7 @@ if __name__ == "__main__":
                 if link not in seen_links and len(clean_title) > 10:
                     seen_links.add(link)
                     
-                    if count < 10:
+                    if count < 25:  # Crawl up to 25 listings to ensure all categories get populated
                         last_date_str, parsed_date, direct_link = fetch_job_details(link)
                         
                         if parsed_date and parsed_date < today:
