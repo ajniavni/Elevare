@@ -6,12 +6,16 @@
     <title>Elevare - Live Govt & PSU Jobs</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f6f9; color: #333; }
-        header { background: #0066cc; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
-        .container { max-width: 600px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        select, button { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
-        button { background: #0066cc; color: white; border: none; font-weight: bold; cursor: pointer; }
+        header { background: #0066cc; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; padding-left: 20px; padding-right: 20px; }
+        .container { max-width: 650px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .step-container { display: none; }
+        .step-container.active { display: block; }
+        label { font-weight: bold; display: block; margin-top: 12px; margin-bottom: 5px; font-size: 14px; }
+        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; margin-top: 10px; background: #0066cc; color: white; border: none; font-weight: bold; border-radius: 5px; font-size: 16px; cursor: pointer; }
         button:hover { background: #004999; }
+        .row { display: flex; gap: 10px; }
+        .row > div { flex: 1; }
         .job-card { background: #fff; border: 1px solid #ddd; border-left: 5px solid #0066cc; padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .dept { font-size: 12px; background: #eef2f7; color: #0066cc; padding: 3px 8px; border-radius: 4px; display: inline-block; font-weight: bold; margin-bottom: 5px; }
         .title { font-size: 16px; font-weight: bold; margin: 5px 0; color: #111; }
@@ -19,54 +23,387 @@
         .last-date { color: #d9534f; font-weight: bold; }
         .apply-btn { display: inline-block; margin-top: 10px; background: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; }
         .apply-btn:hover { background: #218838; }
-        #loading { text-align: center; color: #666; font-style: italic; }
+        .user-badge { font-size: 13px; background: rgba(255,255,255,0.2); padding: 5px 10px; border-radius: 4px; }
+        .link-btn { background: none; border: none; color: #0066cc; cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 10px; width: auto; padding: 0; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .admin-table th { background: #0066cc; color: white; }
+        .del-btn { background: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; font-size: 12px; width: auto; margin: 0; }
     </style>
 </head>
 <body>
 
-<header>Elevare - Live Govt & PSU Jobs</header>
+<header>
+    <span>Elevare - Job Portal</span>
+    <div>
+        <span id="userBadge" class="user-badge" style="display:none; margin-right: 10px;"></span>
+        <button onclick="openAdminPanel()" style="width: auto; padding: 5px 10px; font-size: 12px; background: #444; margin:0;">Admin</button>
+    </div>
+</header>
 
-<div class="container">
-    <label for="qualSelect">Select Qualification:</label>
-    <select id="qualSelect">
-        <option value="All">All Qualifications (Show All)</option>
+<!-- STEP 1: ELEVARE ID & PIN LOGIN (DEFAULT) -->
+<div id="stepIdLogin" class="container step-container active">
+    <h3>Student Login</h3>
+    <p style="color: #666; font-size: 14px;">Enter your unique Elevare ID and 6-digit PIN to login.</p>
+    
+    <label for="loginElevId">Elevare ID</label>
+    <input type="text" id="loginElevId" placeholder="elev082026a001">
+    
+    <label for="loginPin">6-Digit PIN</label>
+    <input type="password" id="loginPin" placeholder="••••••" maxlength="6">
+    
+    <button onclick="loginWithIdPin()">Login to Portal</button>
+    
+    <div style="text-align: center; margin-top: 15px;">
+        <button class="link-btn" onclick="showStep('stepPhoneRegistration')">New Student? Register here with Phone Number</button>
+    </div>
+</div>
+
+<!-- NEW STUDENT REGISTRATION: PHONE & OTP -->
+<div id="stepPhoneRegistration" class="container step-container">
+    <h3>New Student Registration</h3>
+    <p style="color: #666; font-size: 14px;">Enter your mobile number to begin registration.</p>
+    <label for="phoneNumber">Mobile Number (+91 format)</label>
+    <input type="text" id="phoneNumber" placeholder="+91 9876543210" value="+91">
+    <button onclick="sendOTP()">Send OTP</button>
+
+    <div id="otpSection" style="display:none; margin-top: 15px;">
+        <label for="otpCode">Enter 6-Digit OTP</label>
+        <input type="text" id="otpCode" placeholder="123456" maxlength="6">
+        <button onclick="verifyOTP()">Verify OTP & Set PIN</button>
+    </div>
+    
+    <div style="text-align: center; margin-top: 15px;">
+        <button class="link-btn" onclick="showStep('stepIdLogin')">Already have an Elevare ID? Login</button>
+    </div>
+</div>
+
+<!-- STEP 2: 6-DIGIT PIN SETUP -->
+<div id="stepPinSetup" class="container step-container">
+    <h3>Setup Security PIN</h3>
+    <p style="color: #666; font-size: 14px;">Create a secure 6-digit PIN for future logins with your Elevare ID.</p>
+    <label for="securityPin">Enter 6-Digit PIN</label>
+    <input type="password" id="securityPin" placeholder="••••••" maxlength="6">
+    <label for="confirmPin">Confirm 6-Digit PIN</label>
+    <input type="password" id="confirmPin" placeholder="••••••" maxlength="6">
+    <button onclick="savePin()">Save PIN & Proceed to Profile</button>
+</div>
+
+<!-- STEP 3: COMPLETE PROFILE FORM -->
+<div id="stepProfileForm" class="container step-container">
+    <h3>Complete Student Profile</h3>
+    <p style="color: #666; font-size: 14px;">Please complete your profile details to generate your unique Elevare ID.</p>
+    
+    <label for="salutation">Salutation</label>
+    <select id="salutation">
+        <option value="Mr">Mr</option>
+        <option value="Mrs">Mrs</option>
+        <option value="Ms">Ms</option>
+        <option value="Dr">Dr</option>
+    </select>
+
+    <div class="row">
+        <div>
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" required>
+        </div>
+        <div>
+            <label for="middleName">Middle Name</label>
+            <input type="text" id="middleName">
+        </div>
+        <div>
+            <label for="surname">Surname *</label>
+            <input type="text" id="surname" required>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <label for="fatherName">Father's Name *</label>
+            <input type="text" id="fatherName" required>
+        </div>
+        <div>
+            <label for="motherName">Mother's Name *</label>
+            <input type="text" id="motherName" required>
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <label for="fatherPhone">Father's Phone Number</label>
+            <input type="text" id="fatherPhone" placeholder="10-digit number">
+        </div>
+        <div>
+            <label for="motherPhone">Mother's Phone Number</label>
+            <input type="text" id="motherPhone" placeholder="10-digit number">
+        </div>
+    </div>
+
+    <div class="row">
+        <div>
+            <label for="category">Category *</label>
+            <select id="category" required>
+                <option value="General">General</option>
+                <option value="OBC">OBC</option>
+                <option value="SC">SC</option>
+                <option value="ST">ST</option>
+                <option value="EWS">EWS</option>
+            </select>
+        </div>
+        <div>
+            <label for="pwdStatus">PWD Status *</label>
+            <select id="pwdStatus" required>
+                <option value="No">No</option>
+                <option value="Yes">Yes</option>
+            </select>
+        </div>
+    </div>
+
+    <label for="highestQual">Highest Qualification *</label>
+    <select id="highestQual" onchange="checkPostGrad(this.value)" required>
+        <option value="">Select Qualification</option>
         <option value="8th Pass">8th Pass</option>
         <option value="10th Pass">10th Pass</option>
+        <option value="11th Pass">11th Pass</option>
+        <option value="12th Pass">12th Pass</option>
+        <option value="ITI / Diploma">ITI / Diploma</option>
+        <option value="Graduation">Graduation (Any Degree)</option>
+        <option value="Post Graduation">Post Graduation</option>
+    </select>
+
+    <div id="pgSubjectDiv" style="display:none;">
+        <label for="pgSubject">Post Graduation Subject (e.g., Mathematics, Physics)</label>
+        <input type="text" id="pgSubject" placeholder="Enter subject">
+    </div>
+
+    <label for="pincode">Pincode *</label>
+    <input type="text" id="pincode" maxlength="6" required>
+
+    <label for="address">Complete Address *</label>
+    <textarea id="address" rows="3" required></textarea>
+
+    <button onclick="submitProfile()">Submit & Generate Elevare ID</button>
+</div>
+
+<!-- STEP 4: MAIN JOB PORTAL VIEW -->
+<div id="stepJobPortal" class="container step-container" style="max-width: 700px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div>
+            <h3 style="margin:0;">Live Government & PSU Jobs</h3>
+            <small id="displayElevId" style="color: #0066cc; font-weight: bold;"></small>
+        </div>
+        <button onclick="logoutUser()" style="width: auto; padding: 6px 12px; font-size: 12px; background: #d9534f; margin:0;">Logout</button>
+    </div>
+
+    <label for="qualSelect">Filter by Qualification:</label>
+    <select id="qualSelect" onchange="filterJobs()">
+        <option value="All">All Qualifications</option>
+        <option value="8th Pass">8th Pass</option>
+        <option value="10th Pass">10th Pass</option>
+        <option value="11th Pass">11th Pass</option>
         <option value="12th Pass">12th Pass</option>
         <option value="ITI / Diploma">ITI / Diploma</option>
         <option value="Graduate / Any Degree">Graduate / Any Degree</option>
     </select>
-    
-    <button onclick="filterJobs()">Find Matching Jobs</button>
+
+    <div id="resultsContainer" style="margin-top: 15px;">
+        <p style="text-align:center; color:#666;">Loading jobs...</p>
+    </div>
 </div>
 
-<div class="container" id="resultsContainer">
-    <div id="loading">Loading live job listings...</div>
+<!-- ADMIN PANEL MODAL -->
+<div id="adminPanelModal" class="container step-container">
+    <h3>Admin Management Panel</h3>
+    <p style="color: #666; font-size: 14px;">View registered students and manage/delete student accounts.</p>
+    <div id="adminStudentList"></div>
+    <button onclick="closeAdminPanel()" style="background: #555; margin-top: 15px;">Back to Portal</button>
 </div>
 
 <script>
     let allJobs = [];
+    let currentRegPhone = "";
 
-    fetch('jobs.json?v=' + new Date().getTime())
-        .then(response => response.json())
-        .then(data => {
-            allJobs = data;
-            displayJobs(allJobs); // Display all jobs by default on load
-        })
-        .catch(error => {
-            document.getElementById('resultsContainer').innerHTML = '<p style="color:red; text-align:center;">Failed to load job listings. Please try again later.</p>';
-            console.error('Error loading jobs:', error);
-        });
+    window.onload = function() {
+        const loggedInId = localStorage.getItem("elevare_logged_in_id");
+        if (loggedInId) {
+            showStep('stepJobPortal');
+            loadJobs();
+            document.getElementById('userBadge').style.display = 'inline-block';
+            document.getElementById('userBadge').innerText = loggedInId;
+            document.getElementById('displayElevId').innerText = "ID: " + loggedInId;
+        } else {
+            showStep('stepIdLogin');
+        }
+    };
+
+    function showStep(stepId) {
+        document.querySelectorAll('.step-container').forEach(el => el.classList.remove('active'));
+        document.getElementById(stepId).classList.add('active');
+    }
+
+    // Login with Elevare ID & PIN
+    function loginWithIdPin() {
+        const idInput = document.getElementById('loginElevId').value.trim();
+        const pinInput = document.getElementById('loginPin').value.trim();
+
+        if (!idInput || !pinInput) {
+            alert("Please enter both your Elevare ID and 6-digit PIN.");
+            return;
+        }
+
+        let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+        const student = studentsList.find(s => s.elevId === idInput && s.pin === pinInput);
+
+        if (student) {
+            localStorage.setItem("elevare_logged_in_id", student.elevId);
+            showStep('stepJobPortal');
+            loadJobs();
+            document.getElementById('userBadge').style.display = 'inline-block';
+            document.getElementById('userBadge').innerText = student.elevId;
+            document.getElementById('displayElevId').innerText = "ID: " + student.elevId;
+        } else {
+            alert("Invalid Elevare ID or PIN. Please check your credentials.");
+        }
+    }
+
+    // New Registration Phone Verification
+    function sendOTP() {
+        const phone = document.getElementById('phoneNumber').value.trim();
+        if (phone.length < 10) {
+            alert("Please enter a valid phone number.");
+            return;
+        }
+        currentRegPhone = phone;
+        document.getElementById('otpSection').style.display = 'block';
+        alert("OTP sent successfully to " + phone + " (Testing mode: enter any 6 digits like 123456)");
+    }
+
+    function verifyOTP() {
+        const otp = document.getElementById('otpCode').value.trim();
+        if (otp.length !== 6) {
+            alert("Please enter a valid 6-digit OTP.");
+            return;
+        }
+        showStep('stepPinSetup');
+    }
+
+    function savePin() {
+        const pin = document.getElementById('securityPin').value;
+        const confirm = document.getElementById('confirmPin').value;
+        if (pin.length !== 6 || isNaN(pin)) {
+            alert("PIN must be exactly 6 digits.");
+            return;
+        }
+        if (pin !== confirm) {
+            alert("PINs do not match.");
+            return;
+        }
+        localStorage.setItem("temp_reg_pin", pin);
+        showStep('stepProfileForm');
+    }
+
+    function checkPostGrad(val) {
+        const pgDiv = document.getElementById('pgSubjectDiv');
+        pgDiv.style.display = (val === 'Post Graduation') ? 'block' : 'none';
+    }
+
+    // Generate Dot-Free Elevare ID format: elev + month + year + alphabet + serial (e.g. elev082026a001)
+    function generateElevareID() {
+        let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+        const now = new Date();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const year = now.getFullYear();
+        
+        const prefix = `elev${month}${year}`;
+        const monthUsers = studentsList.filter(s => s.elevId && s.elevId.startsWith(prefix));
+        
+        let serialNum = monthUsers.length + 1;
+        let alphabetCode = 'a';
+        
+        if (serialNum > 999) {
+            let blockIndex = Math.floor((serialNum - 1) / 999);
+            alphabetCode = String.fromCharCode(97 + blockIndex); // a, b, c...
+            serialNum = ((serialNum - 1) % 999) + 1;
+        }
+        
+        const serialStr = String(serialNum).padStart(3, '0');
+        return `${prefix}${alphabetCode}${serialStr}`;
+    }
+
+    function submitProfile() {
+        const fname = document.getElementById('firstName').value.trim();
+        const surname = document.getElementById('surname').value.trim();
+        const father = document.getElementById('fatherName').value.trim();
+        const mother = document.getElementById('motherName').value.trim();
+        const qual = document.getElementById('highestQual').value;
+        const pincode = document.getElementById('pincode').value.trim();
+        const address = document.getElementById('address').value.trim();
+
+        if (!fname || !surname || !father || !mother || !qual || !pincode || !address) {
+            alert("Please fill in all mandatory (*) profile fields.");
+            return;
+        }
+
+        const uniqueElevId = generateElevareID();
+        const savedPin = localStorage.getItem("temp_reg_pin");
+
+        const studentProfile = {
+            elevId: uniqueElevId,
+            pin: savedPin,
+            phone: currentRegPhone,
+            salutation: document.getElementById('salutation').value,
+            firstName: fname,
+            middleName: document.getElementById('middleName').value.trim(),
+            surname: surname,
+            fatherName: father,
+            motherName: mother,
+            fatherPhone: document.getElementById('fatherPhone').value.trim(),
+            motherPhone: document.getElementById('motherPhone').value.trim(),
+            category: document.getElementById('category').value,
+            pwd: document.getElementById('pwdStatus').value,
+            qualification: qual,
+            pgSubject: document.getElementById('pgSubject').value.trim(),
+            pincode: pincode,
+            address: address,
+            registeredAt: new Date().toISOString()
+        };
+
+        let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+        studentsList.push(studentProfile);
+        localStorage.setItem("elevare_all_students", JSON.stringify(studentsList));
+
+        // Clear temp PIN
+        localStorage.removeItem("temp_reg_pin");
+        localStorage.setItem("elevare_logged_in_id", uniqueElevId);
+
+        alert("Registration Successful!\nYour Unique Elevare ID is: " + uniqueElevId + "\nPlease save this ID and your PIN for future logins.");
+
+        showStep('stepJobPortal');
+        loadJobs();
+        document.getElementById('userBadge').style.display = 'inline-block';
+        document.getElementById('userBadge').innerText = uniqueElevId;
+        document.getElementById('displayElevId').innerText = "ID: " + uniqueElevId;
+    }
+
+    function loadJobs() {
+        fetch('jobs.json?v=' + new Date().getTime())
+            .then(res => res.json())
+            .then(data => {
+                allJobs = data;
+                displayJobs(allJobs);
+            })
+            .catch(err => {
+                document.getElementById('resultsContainer').innerHTML = '<p style="color:red; text-align:center;">Could not load job listings.</p>';
+            });
+    }
 
     function displayJobs(jobs) {
         const container = document.getElementById('resultsContainer');
         container.innerHTML = '';
-
         if (jobs.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:#777;">No matching live listings found.</p>';
+            container.innerHTML = '<p style="text-align:center; color:#777;">No listings available.</p>';
             return;
         }
-
         jobs.forEach(job => {
             const card = document.createElement('div');
             card.className = 'job-card';
@@ -83,13 +420,68 @@
     }
 
     function filterJobs() {
-        const selectedQual = document.getElementById('qualSelect').value;
-        if (selectedQual === 'All') {
+        const qual = document.getElementById('qualSelect').value;
+        if (qual === 'All') {
             displayJobs(allJobs);
             return;
         }
-        const filtered = allJobs.filter(job => job.qual.toLowerCase().trim() === selectedQual.toLowerCase().trim());
+        const filtered = allJobs.filter(j => j.qual.toLowerCase().trim() === qual.toLowerCase().trim());
         displayJobs(filtered);
+    }
+
+    // Admin Dashboard Methods
+    function openAdminPanel() {
+        const adminPin = prompt("Enter Admin Security PIN:");
+        if (adminPin !== "123456") { 
+            alert("Incorrect Admin PIN!");
+            return;
+        }
+
+        const studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+        const listContainer = document.getElementById('adminStudentList');
+        
+        if (studentsList.length === 0) {
+            listContainer.innerHTML = '<p>No student records found in database.</p>';
+        } else {
+            let html = `<table class="admin-table"><tr><th>Elevare ID</th><th>Name</th><th>Phone</th><th>Action</th></tr>`;
+            studentsList.forEach(s => {
+                html += `<tr>
+                    <td><b>${s.elevId}</b></td>
+                    <td>${s.salutation} ${s.firstName} ${s.surname}</td>
+                    <td>${s.phone}</td>
+                    <td><button class="del-btn" onclick="adminDeleteStudent('${s.elevId}')">Delete</button></td>
+                </tr>`;
+            });
+            html += `</table>`;
+            listContainer.innerHTML = html;
+        }
+        showStep('adminPanelModal');
+    }
+
+    function closeAdminPanel() {
+        const loggedInId = localStorage.getItem("elevare_logged_in_id");
+        if (loggedInId) {
+            showStep('stepJobPortal');
+        } else {
+            showStep('stepIdLogin');
+        }
+    }
+
+    function adminDeleteStudent(elevId) {
+        if (confirm("Are you sure you want to delete student ID " + elevId + "?")) {
+            let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+            studentsList = studentsList.filter(s => s.elevId !== elevId);
+            localStorage.setItem("elevare_all_students", JSON.stringify(studentsList));
+            alert("Student ID successfully deleted from database.");
+            openAdminPanel(); 
+        }
+    }
+
+    function logoutUser() {
+        if (confirm("Are you sure you want to logout?")) {
+            localStorage.removeItem("elevare_logged_in_id");
+            location.reload();
+        }
     }
 </script>
 
