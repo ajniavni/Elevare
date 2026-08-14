@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elevare - Live Govt & PSU Jobs Portal</title>
+    <title>ELEVARE - LIVE GOVT & PSU JOBS PORTAL</title>
     <style>
         :root {
             --primary: #0056b3;
@@ -25,6 +25,7 @@
             padding: 0; 
             background-color: var(--bg-color); 
             color: var(--text-main); 
+            text-transform: uppercase; 
         }
 
         header { 
@@ -60,11 +61,11 @@
         .brand-title {
             font-size: 22px;
             font-weight: bold;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
 
         .container { 
-            max-width: 680px; 
+            max-width: 700px; 
             margin: 25px auto; 
             padding: 25px; 
             background: var(--card-bg); 
@@ -75,8 +76,8 @@
         .step-container { display: none; }
         .step-container.active { display: block; }
 
-        h3 { margin-top: 0; color: var(--primary-dark); }
-        label { font-weight: 600; display: block; margin-top: 14px; margin-bottom: 6px; font-size: 14px; color: #444; }
+        h3 { margin-top: 0; color: var(--primary-dark); letter-spacing: 0.5px; }
+        label { font-weight: 600; display: block; margin-top: 14px; margin-bottom: 6px; font-size: 13px; color: #444; }
         
         input, select, textarea { 
             width: 100%; 
@@ -84,8 +85,9 @@
             margin-bottom: 12px; 
             border: 1px solid var(--border-color); 
             border-radius: 6px; 
-            font-size: 15px; 
+            font-size: 14px; 
             box-sizing: border-box; 
+            text-transform: uppercase;
             transition: border-color 0.2s;
         }
 
@@ -104,15 +106,16 @@
             border: none; 
             font-weight: bold; 
             border-radius: 6px; 
-            font-size: 16px; 
+            font-size: 15px; 
             cursor: pointer; 
+            text-transform: uppercase;
             transition: background 0.2s, transform 0.1s;
         }
 
         button:hover { background: var(--primary-dark); }
         button:active { transform: scale(0.99); }
 
-        .row { display: flex; gap: 12px; }
+        .row { display: flex; gap: 10px; }
         .row > div { flex: 1; }
 
         .job-card { 
@@ -136,50 +139,105 @@
             display: inline-block; 
             font-weight: 700; 
             margin-bottom: 8px; 
-            text-transform: uppercase;
         }
 
-        .title { font-size: 17px; font-weight: bold; margin: 6px 0; color: #1a1a1a; }
-        .details { font-size: 14px; color: var(--text-muted); margin: 4px 0; }
+        .title { font-size: 16px; font-weight: bold; margin: 6px 0; color: #1a1a1a; }
+        .details { font-size: 13px; color: var(--text-muted); margin: 4px 0; }
         .last-date { color: #d9534f; font-weight: bold; }
 
+        .action-btn-group { display: flex; gap: 8px; margin-top: 12px; }
+        
         .whatsapp-apply-btn { 
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            width: 100%;
-            margin-top: 14px; 
+            gap: 6px;
+            flex: 1;
             background: var(--whatsapp); 
             color: white; 
-            padding: 10px 15px; 
+            padding: 10px; 
             text-decoration: none; 
             border-radius: 6px; 
             font-weight: bold; 
-            font-size: 15px; 
+            font-size: 13px; 
             box-sizing: border-box;
+            text-transform: uppercase;
             transition: background 0.2s;
         }
         .whatsapp-apply-btn:hover { background: var(--whatsapp-dark); }
 
+        .qr-pay-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1;
+            background: #6f42c1;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+            margin-top: 0;
+        }
+        .qr-pay-btn:hover { background: #5a3298; }
+
         .user-badge { font-size: 13px; background: rgba(255,255,255,0.25); padding: 6px 12px; border-radius: 20px; font-weight: 600; }
-        .link-btn { background: none; border: none; color: var(--primary); cursor: pointer; text-decoration: underline; font-size: 14px; margin-top: 10px; width: auto; padding: 0; }
+        .link-btn { background: none; border: none; color: var(--primary); cursor: pointer; text-decoration: underline; font-size: 13px; margin-top: 10px; width: auto; padding: 0; text-transform: uppercase; }
         .link-btn:hover { color: var(--primary-dark); }
 
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
-        .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 10px; text-align: left; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+        .admin-table th, .admin-table td { border: 1px solid var(--border-color); padding: 8px; text-align: left; }
         .admin-table th { background: var(--primary); color: white; }
-        .del-btn { background: #d9534f; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; width: auto; margin: 0; }
+        .del-btn { background: #d9534f; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 11px; width: auto; margin: 0; }
         .del-btn:hover { background: #c9302c; }
         
-        .pricing-notice {
-            background: #fff8e1;
-            border-left: 4px solid #ffc107;
-            padding: 10px 14px;
+        /* Stylish Offer Banner */
+        .offer-banner {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
             font-size: 13px;
-            color: #856404;
-            border-radius: 4px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.35);
+            letter-spacing: 0.5px;
+            border: 2px dashed #fff;
+        }
+
+        /* Modal Styles for QR Code */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        .qr-image {
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+            border: 4px solid #f1f1f1;
+            border-radius: 8px;
         }
     </style>
 </head>
@@ -188,117 +246,111 @@
 <header>
     <div class="brand-container">
         <div class="brand-logo">E</div>
-        <div class="brand-title">Elevare</div>
+        <div class="brand-title">ELEVARE</div>
     </div>
     <div>
-        <span id="userBadge" class="user-badge" style="display:none; margin-right: 10px;"></span>
-        <button onclick="openAdminPanel()" style="width: auto; padding: 6px 14px; font-size: 12px; background: #333; margin:0;">Admin Panel</button>
+        <span id="userBadge" class="user-badge" style="display:none;"></span>
     </div>
 </header>
 
-<!-- STEP 1: ELEVARE ID & PIN LOGIN -->
+<!-- STEP 1: ELEVARE ID & PIN LOGIN WITH ADMIN BUTTON -->
 <div id="stepIdLogin" class="container step-container active">
-    <h3>Student Portal Login</h3>
-    <p style="color: var(--text-muted); font-size: 14px;">Enter your unique Elevare ID and 6-digit PIN to access live openings.</p>
+    <h3>STUDENT PORTAL LOGIN</h3>
+    <p style="color: var(--text-muted); font-size: 13px;">ENTER YOUR UNIQUE ELEVARE ID AND 6-DIGIT PIN TO ACCESS LIVE OPENINGS.</p>
     
-    <label for="loginElevId">Elevare ID</label>
-    <input type="text" id="loginElevId" placeholder="elev082026a001">
+    <label for="loginElevId">ELEVARE ID</label>
+    <input type="text" id="loginElevId" placeholder="ELEV082026A001">
     
-    <label for="loginPin">6-Digit PIN</label>
+    <label for="loginPin">6-DIGIT PIN</label>
     <input type="password" id="loginPin" placeholder="••••••" maxlength="6">
     
-    <button onclick="loginWithIdPin()">Login to Portal</button>
+    <button onclick="loginWithIdPin()">LOGIN TO PORTAL</button>
     
     <div style="text-align: center; margin-top: 15px;">
-        <button class="link-btn" onclick="showStep('stepPhoneRegistration')">New Student? Register with Phone Number</button>
+        <button class="link-btn" onclick="showStep('stepPhoneRegistration')">NEW STUDENT? REGISTER WITH PHONE NUMBER</button>
+    </div>
+
+    <!-- Admin Login Button ONLY on First Page -->
+    <div style="margin-top: 30px; border-top: 1px dashed var(--border-color); padding-top: 15px; text-align: center;">
+        <button onclick="openAdminPanel()" style="background: #333; font-size: 13px; padding: 10px;">ADMIN DATABASE ACCESS (EXCEL EXPORT)</button>
     </div>
 </div>
 
 <!-- NEW STUDENT REGISTRATION: PHONE & OTP -->
 <div id="stepPhoneRegistration" class="container step-container">
-    <h3>New Student Registration</h3>
-    <p style="color: var(--text-muted); font-size: 14px;">Verify your mobile number to get started.</p>
-    <label for="phoneNumber">Mobile Number (+91 format)</label>
+    <h3>NEW STUDENT REGISTRATION</h3>
+    <p style="color: var(--text-muted); font-size: 13px;">VERIFY YOUR MOBILE NUMBER TO GET STARTED.</p>
+    <label for="phoneNumber">MOBILE NUMBER (+91 FORMAT)</label>
     <input type="text" id="phoneNumber" placeholder="+91 9876543210" value="+91">
-    <button onclick="sendOTP()">Send Verification OTP</button>
+    <button onclick="sendOTP()">SEND VERIFICATION OTP</button>
 
     <div id="otpSection" style="display:none; margin-top: 15px;">
-        <label for="otpCode">Enter 6-Digit OTP</label>
+        <label for="otpCode">ENTER 6-DIGIT OTP</label>
         <input type="text" id="otpCode" placeholder="123456" maxlength="6">
-        <button onclick="verifyOTP()">Verify & Set PIN</button>
+        <button onclick="verifyOTP()">VERIFY & SET PIN</button>
     </div>
     
     <div style="text-align: center; margin-top: 15px;">
-        <button class="link-btn" onclick="showStep('stepIdLogin')">Already have an Elevare ID? Login here</button>
+        <button class="link-btn" onclick="showStep('stepIdLogin')">ALREADY HAVE AN ELEVARE ID? LOGIN HERE</button>
     </div>
 </div>
 
 <!-- STEP 2: 6-DIGIT PIN SETUP -->
 <div id="stepPinSetup" class="container step-container">
-    <h3>Setup Security PIN</h3>
-    <p style="color: var(--text-muted); font-size: 14px;">Create a secure 6-digit PIN for future quick logins.</p>
-    <label for="securityPin">Enter 6-Digit PIN</label>
+    <h3>SETUP SECURITY PIN</h3>
+    <p style="color: var(--text-muted); font-size: 13px;">CREATE A SECURE 6-DIGIT PIN FOR FUTURE QUICK LOGINS.</p>
+    <label for="securityPin">ENTER 6-DIGIT PIN</label>
     <input type="password" id="securityPin" placeholder="••••••" maxlength="6">
-    <label for="confirmPin">Confirm 6-Digit PIN</label>
+    <label for="confirmPin">CONFIRM 6-DIGIT PIN</label>
     <input type="password" id="confirmPin" placeholder="••••••" maxlength="6">
-    <button onclick="savePin()">Save PIN & Complete Profile</button>
+    <button onclick="savePin()">SAVE PIN & COMPLETE PROFILE</button>
 </div>
 
-<!-- STEP 3: COMPLETE PROFILE FORM -->
+<!-- STEP 3: COMPLETE PROFILE FORM (NO SALUTATIONS, FULL NAME STRUCTURE) -->
 <div id="stepProfileForm" class="container step-container">
-    <h3>Complete Student Profile</h3>
-    <p style="color: var(--text-muted); font-size: 14px;">Provide your profile details to generate your permanent Elevare ID.</p>
+    <h3>COMPLETE STUDENT PROFILE</h3>
+    <p style="color: var(--text-muted); font-size: 13px;">PROVIDE YOUR PROFILE DETAILS TO GENERATE YOUR PERMANENT ELEVARE ID.</p>
     
-    <label for="salutation">Salutation</label>
-    <select id="salutation">
-        <option value="Mr">Mr</option>
-        <option value="Mrs">Mrs</option>
-        <option value="Ms">Ms</option>
-        <option value="Dr">Dr</option>
-    </select>
+    <!-- Student Name -->
+    <label>STUDENT FULL NAME *</label>
+    <div class="row">
+        <div><input type="text" id="firstName" placeholder="FIRST NAME" required></div>
+        <div><input type="text" id="middleName" placeholder="MIDDLE NAME"></div>
+        <div><input type="text" id="surname" placeholder="LAST NAME / SURNAME" required></div>
+    </div>
+
+    <!-- Father's Name -->
+    <label>FATHER'S FULL NAME *</label>
+    <div class="row">
+        <div><input type="text" id="fatherFirstName" placeholder="FIRST NAME" required></div>
+        <div><input type="text" id="fatherMiddleName" placeholder="MIDDLE NAME"></div>
+        <div><input type="text" id="fatherSurname" placeholder="LAST NAME / SURNAME" required></div>
+    </div>
+
+    <!-- Mother's Name -->
+    <label>MOTHER'S FULL NAME *</label>
+    <div class="row">
+        <div><input type="text" id="motherFirstName" placeholder="FIRST NAME" required></div>
+        <div><input type="text" id="motherMiddleName" placeholder="MIDDLE NAME"></div>
+        <div><input type="text" id="motherSurname" placeholder="LAST NAME / SURNAME" required></div>
+    </div>
 
     <div class="row">
         <div>
-            <label for="firstName">First Name *</label>
-            <input type="text" id="firstName" required>
+            <label for="fatherPhone">FATHER'S PHONE NUMBER</label>
+            <input type="text" id="fatherPhone" placeholder="10-DIGIT NUMBER">
         </div>
         <div>
-            <label for="middleName">Middle Name</label>
-            <input type="text" id="middleName">
-        </div>
-        <div>
-            <label for="surname">Surname *</label>
-            <input type="text" id="surname" required>
+            <label for="motherPhone">MOTHER'S PHONE NUMBER</label>
+            <input type="text" id="motherPhone" placeholder="10-DIGIT NUMBER">
         </div>
     </div>
 
     <div class="row">
         <div>
-            <label for="fatherName">Father's Name *</label>
-            <input type="text" id="fatherName" required>
-        </div>
-        <div>
-            <label for="motherName">Mother's Name *</label>
-            <input type="text" id="motherName" required>
-        </div>
-    </div>
-
-    <div class="row">
-        <div>
-            <label for="fatherPhone">Father's Phone Number</label>
-            <input type="text" id="fatherPhone" placeholder="10-digit number">
-        </div>
-        <div>
-            <label for="motherPhone">Mother's Phone Number</label>
-            <input type="text" id="motherPhone" placeholder="10-digit number">
-        </div>
-    </div>
-
-    <div class="row">
-        <div>
-            <label for="category">Category *</label>
+            <label for="category">CATEGORY *</label>
             <select id="category" required>
-                <option value="General">General</option>
+                <option value="GENERAL">GENERAL</option>
                 <option value="OBC">OBC</option>
                 <option value="SC">SC</option>
                 <option value="ST">ST</option>
@@ -306,82 +358,101 @@
             </select>
         </div>
         <div>
-            <label for="pwdStatus">PWD Status *</label>
+            <label for="pwdStatus">PWD STATUS *</label>
             <select id="pwdStatus" required>
-                <option value="No">No</option>
-                <option value="Yes">Yes</option>
+                <option value="NO">NO</option>
+                <option value="YES">YES</option>
             </select>
         </div>
     </div>
 
-    <label for="highestQual">Highest Qualification *</label>
+    <label for="highestQual">HIGHEST QUALIFICATION *</label>
     <select id="highestQual" onchange="checkPostGrad(this.value)" required>
-        <option value="">Select Qualification</option>
-        <option value="8th Pass">8th Pass</option>
-        <option value="10th Pass">10th Pass</option>
-        <option value="11th Pass">11th Pass</option>
-        <option value="12th Pass">12th Pass</option>
-        <option value="ITI / Diploma">ITI / Diploma</option>
-        <option value="Graduation">Graduation (Any Degree)</option>
-        <option value="Post Graduation">Post Graduation</option>
+        <option value="">SELECT QUALIFICATION</option>
+        <option value="8th Pass">8TH PASS</option>
+        <option value="10th Pass">10TH PASS</option>
+        <option value="11th Pass">11TH PASS</option>
+        <option value="12th Pass">12TH PASS</option>
+        <option value="ITI / Diploma">ITI / DIPLOMA</option>
+        <option value="Graduation">GRADUATION (ANY DEGREE)</option>
+        <option value="Post Graduation">POST GRADUATION</option>
     </select>
 
     <div id="pgSubjectDiv" style="display:none;">
-        <label for="pgSubject">Post Graduation Subject (e.g., Mathematics, Physics)</label>
-        <input type="text" id="pgSubject" placeholder="Enter subject">
+        <label for="pgSubject">POST GRADUATION SUBJECT</label>
+        <input type="text" id="pgSubject" placeholder="ENTER SUBJECT">
     </div>
 
-    <label for="pincode">Pincode *</label>
+    <label for="pincode">PINCODE *</label>
     <input type="text" id="pincode" maxlength="6" required>
 
-    <label for="address">Complete Address *</label>
+    <label for="address">COMPLETE ADDRESS *</label>
     <textarea id="address" rows="3" required></textarea>
 
-    <button onclick="submitProfile()">Submit & Generate Elevare ID</button>
+    <button onclick="submitProfile()">SUBMIT & GENERATE ELEVARE ID</button>
 </div>
 
 <!-- STEP 4: MAIN JOB PORTAL VIEW -->
 <div id="stepJobPortal" class="container step-container" style="max-width: 750px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
         <div>
-            <h3 style="margin:0;">Live Government & PSU Openings</h3>
+            <h3 style="margin:0;">LIVE GOVERNMENT & PSU OPENINGS</h3>
             <small id="displayElevId" style="color: var(--primary); font-weight: bold;"></small>
         </div>
-        <button onclick="logoutUser()" style="width: auto; padding: 6px 12px; font-size: 12px; background: #dc3545; margin:0;">Logout</button>
+        <button onclick="logoutUser()" style="width: auto; padding: 6px 12px; font-size: 11px; background: #dc3545; margin:0;">LOGOUT</button>
     </div>
 
-    <div class="pricing-notice">
-        <strong>Application Pricing Notice:</strong> First 3 applications cost ₹69 each. Applications 4 to 10 cost ₹49 each. Any application after 10 in the same month drops to ₹31 each!
+    <!-- Stylish Offer Banner for Pricing -->
+    <div class="offer-banner">
+        🔥 SPECIAL MONTHLY OFFER BANNER 🔥<br>
+        FIRST 3 APPLICATIONS @ ₹69 EACH | APPLICATIONS 4 TO 10 @ ₹49 EACH | ABOVE 10 APPLICATIONS ONLY ₹31 EACH!
     </div>
 
-    <label for="qualSelect">Filter by Qualification:</label>
+    <label for="qualSelect">FILTER BY QUALIFICATION:</label>
     <select id="qualSelect" onchange="filterJobs()">
-        <option value="All">All Qualifications</option>
-        <option value="8th Pass">8th Pass</option>
-        <option value="10th Pass">10th Pass</option>
-        <option value="11th Pass">11th Pass</option>
-        <option value="12th Pass">12th Pass</option>
-        <option value="ITI / Diploma">ITI / Diploma</option>
-        <option value="Graduate / Any Degree">Graduate / Any Degree</option>
+        <option value="All">ALL QUALIFICATIONS</option>
+        <option value="8th Pass">8TH PASS</option>
+        <option value="10th Pass">10TH PASS</option>
+        <option value="11th Pass">11TH PASS</option>
+        <option value="12th Pass">12TH PASS</option>
+        <option value="ITI / Diploma">ITI / DIPLOMA</option>
+        <option value="Graduate / Any Degree">GRADUATE / ANY DEGREE</option>
     </select>
 
     <div id="resultsContainer" style="margin-top: 15px;">
-        <p style="text-align:center; color:var(--text-muted);">Loading jobs...</p>
+        <p style="text-align:center; color:var(--text-muted);">LOADING JOBS...</p>
     </div>
 </div>
 
 <!-- ADMIN PANEL MODAL -->
 <div id="adminPanelModal" class="container step-container">
-    <h3>Admin Management Panel</h3>
-    <p style="color: var(--text-muted); font-size: 14px;">Manage student records and accounts.</p>
+    <h3>ADMIN MANAGEMENT & DATABASE PANEL</h3>
+    <p style="color: var(--text-muted); font-size: 13px;">VIEW REGISTERED STUDENTS AND EXPORT DATABASE RECORDS FOR EXCEL.</p>
+    
+    <button onclick="exportDatabaseToExcel()" style="background: var(--success); margin-bottom: 15px;">📥 EXPORT DATABASE FOR EXCEL (CSV)</button>
+    
     <div id="adminStudentList"></div>
-    <button onclick="closeAdminPanel()" style="background: #555; margin-top: 15px;">Back to Portal</button>
+    <button onclick="closeAdminPanel()" style="background: #555; margin-top: 15px;">BACK TO LOGIN</button>
+</div>
+
+<!-- QR CODE PAYMENT MODAL -->
+<div id="qrModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3>SCAN QR CODE TO PAY</h3>
+        <p style="font-size: 12px; color: var(--text-muted);">SCAN USING ANY UPI APP (GOOGLE PAY, PHONEPE, PAYTM)</p>
+        
+        <!-- Standard UPI QR Code placeholder image representing QR payment -->
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=9796732506@paytm&pn=Elevare&cu=INR" alt="UPI QR Code" class="qr-image">
+        
+        <p id="qrPriceTag" style="font-weight: bold; color: var(--primary); font-size: 16px; margin: 10px 0;"></p>
+        
+        <button onclick="closeQrModal()" style="background: #6c757d; margin-top: 5px;">CLOSE</button>
+    </div>
 </div>
 
 <script>
     let allJobs = [];
     let currentRegPhone = "";
-    // Configured admin WhatsApp number
     const DESIGNATED_WHATSAPP_NUMBER = "919796732506"; 
 
     window.onload = function() {
@@ -403,11 +474,11 @@
     }
 
     function loginWithIdPin() {
-        const idInput = document.getElementById('loginElevId').value.trim();
+        const idInput = document.getElementById('loginElevId').value.trim().toUpperCase();
         const pinInput = document.getElementById('loginPin').value.trim();
 
         if (!idInput || !pinInput) {
-            alert("Please enter both your Elevare ID and 6-digit PIN.");
+            alert("PLEASE ENTER BOTH YOUR ELEVARE ID AND 6-DIGIT PIN.");
             return;
         }
 
@@ -422,25 +493,25 @@
             document.getElementById('userBadge').innerText = student.elevId;
             document.getElementById('displayElevId').innerText = "ID: " + student.elevId;
         } else {
-            alert("Invalid Elevare ID or PIN. Please check your credentials.");
+            alert("INVALID ELEVARE ID OR PIN. PLEASE CHECK YOUR CREDENTIALS.");
         }
     }
 
     function sendOTP() {
         const phone = document.getElementById('phoneNumber').value.trim();
         if (phone.length < 10) {
-            alert("Please enter a valid phone number.");
+            alert("PLEASE ENTER A VALID PHONE NUMBER.");
             return;
         }
         currentRegPhone = phone;
         document.getElementById('otpSection').style.display = 'block';
-        alert("OTP sent successfully to " + phone + " (Testing mode: enter any 6 digits like 123456)");
+        alert("OTP SENT SUCCESSFULLY TO " + phone + " (TESTING MODE: ENTER ANY 6 DIGITS LIKE 123456)");
     }
 
     function verifyOTP() {
         const otp = document.getElementById('otpCode').value.trim();
         if (otp.length !== 6) {
-            alert("Please enter a valid 6-digit OTP.");
+            alert("PLEASE ENTER A VALID 6-DIGIT OTP.");
             return;
         }
         showStep('stepPinSetup');
@@ -450,11 +521,11 @@
         const pin = document.getElementById('securityPin').value;
         const confirm = document.getElementById('confirmPin').value;
         if (pin.length !== 6 || isNaN(pin)) {
-            alert("PIN must be exactly 6 digits.");
+            alert("PIN MUST BE EXACTLY 6 DIGITS.");
             return;
         }
         if (pin !== confirm) {
-            alert("PINs do not match.");
+            alert("PINS DO NOT MATCH.");
             return;
         }
         localStorage.setItem("temp_reg_pin", pin);
@@ -472,15 +543,15 @@
         const month = String(now.getMonth() + 1).padStart(2, '0');
         const year = now.getFullYear();
         
-        const prefix = `elev${month}${year}`;
+        const prefix = `ELEV${month}${year}`;
         const monthUsers = studentsList.filter(s => s.elevId && s.elevId.startsWith(prefix));
         
         let serialNum = monthUsers.length + 1;
-        let alphabetCode = 'a';
+        let alphabetCode = 'A';
         
         if (serialNum > 999) {
             let blockIndex = Math.floor((serialNum - 1) / 999);
-            alphabetCode = String.fromCharCode(97 + blockIndex);
+            alphabetCode = String.fromCharCode(65 + blockIndex);
             serialNum = ((serialNum - 1) % 999) + 1;
         }
         
@@ -489,16 +560,24 @@
     }
 
     function submitProfile() {
-        const fname = document.getElementById('firstName').value.trim();
-        const surname = document.getElementById('surname').value.trim();
-        const father = document.getElementById('fatherName').value.trim();
-        const mother = document.getElementById('motherName').value.trim();
+        const fname = document.getElementById('firstName').value.trim().toUpperCase();
+        const mname = document.getElementById('middleName').value.trim().toUpperCase();
+        const surname = document.getElementById('surname').value.trim().toUpperCase();
+        
+        const fFname = document.getElementById('fatherFirstName').value.trim().toUpperCase();
+        const fMname = document.getElementById('fatherMiddleName').value.trim().toUpperCase();
+        const fSurname = document.getElementById('fatherSurname').value.trim().toUpperCase();
+
+        const mFname = document.getElementById('motherFirstName').value.trim().toUpperCase();
+        const mMname = document.getElementById('motherMiddleName').value.trim().toUpperCase();
+        const mSurname = document.getElementById('motherSurname').value.trim().toUpperCase();
+
         const qual = document.getElementById('highestQual').value;
         const pincode = document.getElementById('pincode').value.trim();
-        const address = document.getElementById('address').value.trim();
+        const address = document.getElementById('address').value.trim().toUpperCase();
 
-        if (!fname || !surname || !father || !mother || !qual || !pincode || !address) {
-            alert("Please fill in all mandatory (*) profile fields.");
+        if (!fname || !surname || !fFname || !fSurname || !mFname || !mSurname || !qual || !pincode || !address) {
+            alert("PLEASE FILL IN ALL MANDATORY (*) PROFILE FIELDS.");
             return;
         }
 
@@ -509,18 +588,21 @@
             elevId: uniqueElevId,
             pin: savedPin,
             phone: currentRegPhone,
-            salutation: document.getElementById('salutation').value,
             firstName: fname,
-            middleName: document.getElementById('middleName').value.trim(),
+            middleName: mname,
             surname: surname,
-            fatherName: father,
-            motherName: mother,
+            fatherFirstName: fFname,
+            fatherMiddleName: fMname,
+            fatherSurname: fSurname,
+            motherFirstName: mFname,
+            motherMiddleName: mMname,
+            motherSurname: mSurname,
             fatherPhone: document.getElementById('fatherPhone').value.trim(),
             motherPhone: document.getElementById('motherPhone').value.trim(),
             category: document.getElementById('category').value,
             pwd: document.getElementById('pwdStatus').value,
             qualification: qual,
-            pgSubject: document.getElementById('pgSubject').value.trim(),
+            pgSubject: document.getElementById('pgSubject').value.trim().toUpperCase(),
             pincode: pincode,
             address: address,
             registeredAt: new Date().toISOString()
@@ -533,7 +615,7 @@
         localStorage.removeItem("temp_reg_pin");
         localStorage.setItem("elevare_logged_in_id", uniqueElevId);
 
-        alert("Registration Successful!\nYour Unique Elevare ID is: " + uniqueElevId);
+        alert("REGISTRATION SUCCESSFUL!\nYOUR UNIQUE ELEVARE ID IS: " + uniqueElevId);
 
         showStep('stepJobPortal');
         loadJobs();
@@ -550,7 +632,7 @@
                 displayJobs(allJobs);
             })
             .catch(err => {
-                document.getElementById('resultsContainer').innerHTML = '<p style="color:red; text-align:center;">Could not load job listings.</p>';
+                document.getElementById('resultsContainer').innerHTML = '<p style="color:red; text-align:center;">COULD NOT LOAD JOB LISTINGS.</p>';
             });
     }
 
@@ -580,7 +662,7 @@
         const student = studentsList.find(s => s.elevId === studentId);
 
         if (!student) {
-            alert("Student session error. Please login again.");
+            alert("STUDENT SESSION ERROR. PLEASE LOGIN AGAIN.");
             return;
         }
 
@@ -588,16 +670,16 @@
 
         const message = 
             `*JOB APPLICATION REQUEST - ELEVARE*\n\n` +
-            `*Student ID:* ${student.elevId}\n` +
-            `*Name:* ${student.salutation} ${student.firstName} ${student.surname}\n` +
-            `*Mobile:* ${student.phone}\n` +
-            `*Category:* ${student.category} | *PWD:* ${student.pwd}\n\n` +
-            `*Job Title:* ${jobTitle}\n` +
-            `*Department:* ${jobDept}\n` +
-            `*Official Link:* ${officialLink}\n\n` +
-            `*Monthly Application No:* #${appInfo.count}\n` +
-            `*Applicable Price:* ₹${appInfo.price}\n\n` +
-            `Please process my application form.`;
+            `*STUDENT ID:* ${student.elevId}\n` +
+            `*NAME:* ${student.firstName} ${student.middleName} ${student.surname}\n` +
+            `*MOBILE:* ${student.phone}\n` +
+            `*CATEGORY:* ${student.category} | *PWD:* ${student.pwd}\n\n` +
+            `*JOB TITLE:* ${jobTitle}\n` +
+            `*DEPARTMENT:* ${jobDept}\n` +
+            `*OFFICIAL LINK:* ${officialLink}\n\n` +
+            `*MONTHLY APPLICATION NO:* #${appInfo.count}\n` +
+            `*APPLICABLE PRICE:* ₹${appInfo.price}\n\n` +
+            `PLEASE PROCESS MY APPLICATION FORM.`;
 
         const encodedMessage = encodeURIComponent(message);
         const whatsappUrl = `https://wa.me/${DESIGNATED_WHATSAPP_NUMBER}?text=${encodedMessage}`;
@@ -605,11 +687,35 @@
         window.open(whatsappUrl, '_blank');
     }
 
+    function openQrPaymentModal(jobTitle) {
+        const studentId = localStorage.getItem("elevare_logged_in_id");
+        if (!studentId) {
+            alert("PLEASE LOGIN FIRST.");
+            return;
+        }
+        // Preview price calculation for current application
+        const now = new Date();
+        const yearMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        const storageKey = `apps_count_${studentId}_${yearMonthKey}`;
+        let currentCount = parseInt(localStorage.getItem(storageKey) || "0") + 1;
+        
+        let price = 69;
+        if (currentCount > 3 && currentCount <= 10) price = 49;
+        else if (currentCount > 10) price = 31;
+
+        document.getElementById('qrPriceTag').innerText = `AMOUNT TO PAY: ₹${price} (APP #${currentCount})`;
+        document.getElementById('qrModal').style.display = 'flex';
+    }
+
+    function closeQrModal() {
+        document.getElementById('qrModal').style.display = 'none';
+    }
+
     function displayJobs(jobs) {
         const container = document.getElementById('resultsContainer');
         container.innerHTML = '';
         if (jobs.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">No listings available.</p>';
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted);">NO LISTINGS AVAILABLE.</p>';
             return;
         }
         jobs.forEach(job => {
@@ -618,12 +724,15 @@
             card.innerHTML = `
                 <div class="dept">${job.dept}</div>
                 <div class="title">${job.title}</div>
-                <div class="details"><strong>Qualification:</strong> ${job.qual}</div>
-                <div class="details"><strong>Age Limit:</strong> ${job.min} - ${job.max} Years</div>
-                <div class="details"><strong>Last Date:</strong> <span class="last-date">${job.last_date}</span></div>
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <a href="${job.link}" target="_blank" class="apply-btn" style="flex:1; text-align:center; background:#0056b3; padding:10px; color:white; text-decoration:none; border-radius:6px; font-weight:bold; font-size:14px;">Official Notice →</a>
-                    <button onclick="triggerWhatsAppApplication('${job.title.replace(/'/g, "\\'")}', '${job.dept.replace(/'/g, "\\'")}', '${job.link}')" class="whatsapp-apply-btn" style="flex:1; margin-top:0;">Apply via WhatsApp</button>
+                <div class="details"><strong>QUALIFICATION:</strong> ${job.qual}</div>
+                <div class="details"><strong>AGE LIMIT:</strong> ${job.min} - ${job.max} YEARS</div>
+                <div class="details"><strong>LAST DATE:</strong> <span class="last-date">${job.last_date}</span></div>
+                <div style="margin-top: 10px;">
+                    <a href="${job.link}" target="_blank" style="display:block; text-align:center; background:#0056b3; padding:8px; color:white; text-decoration:none; border-radius:6px; font-weight:bold; font-size:12px; margin-bottom:8px;">OFFICIAL NOTICE →</a>
+                </div>
+                <div class="action-btn-group">
+                    <button onclick="openQrPaymentModal('${job.title.replace(/'/g, "\\'")}')" class="qr-pay-btn">PAY VIA QR</button>
+                    <button onclick="triggerWhatsAppApplication('${job.title.replace(/'/g, "\\'")}', '${job.dept.replace(/'/g, "\\'")}', '${job.link}')" class="whatsapp-apply-btn">APPLY VIA WHATSAPP</button>
                 </div>
             `;
             container.appendChild(card);
@@ -641,9 +750,9 @@
     }
 
     function openAdminPanel() {
-        const adminPin = prompt("Enter Admin Security PIN:");
+        const adminPin = prompt("ENTER ADMIN SECURITY PIN:");
         if (adminPin !== "123456") { 
-            alert("Incorrect Admin PIN!");
+            alert("INCORRECT ADMIN PIN!");
             return;
         }
 
@@ -651,15 +760,15 @@
         const listContainer = document.getElementById('adminStudentList');
         
         if (studentsList.length === 0) {
-            listContainer.innerHTML = '<p>No student records found in database.</p>';
+            listContainer.innerHTML = '<p>NO STUDENT RECORDS FOUND IN DATABASE.</p>';
         } else {
-            let html = `<table class="admin-table"><tr><th>Elevare ID</th><th>Name</th><th>Phone</th><th>Action</th></tr>`;
+            let html = `<table class="admin-table"><tr><th>ELEVARE ID</th><th>STUDENT NAME</th><th>PHONE</th><th>ACTION</th></tr>`;
             studentsList.forEach(s => {
                 html += `<tr>
                     <td><b>${s.elevId}</b></td>
-                    <td>${s.salutation} ${s.firstName} ${s.surname}</td>
+                    <td>${s.firstName} ${s.surname}</td>
                     <td>${s.phone}</td>
-                    <td><button class="del-btn" onclick="adminDeleteStudent('${s.elevId}')">Delete</button></td>
+                    <td><button class="del-btn" onclick="adminDeleteStudent('${s.elevId}')">DELETE</button></td>
                 </tr>`;
             });
             html += `</table>`;
@@ -668,27 +777,50 @@
         showStep('adminPanelModal');
     }
 
-    function closeAdminPanel() {
-        const loggedInId = localStorage.getItem("elevare_logged_in_id");
-        if (loggedInId) {
-            showStep('stepJobPortal');
-        } else {
-            showStep('stepIdLogin');
+    function exportDatabaseToExcel() {
+        let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
+        if (studentsList.length === 0) {
+            alert("NO DATA TO EXPORT.");
+            return;
         }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += "ElevareID,Phone,FirstName,MiddleName,Surname,FatherFirstName,FatherSurname,MotherFirstName,MotherSurname,Category,PWD,Qualification,Pincode,Address,RegisteredAt\r\n";
+
+        studentsList.forEach(s => {
+            let row = [
+                s.elevId, s.phone, s.firstName, s.middleName, s.surname,
+                s.fatherFirstName, s.fatherSurname, s.motherFirstName, s.motherSurname,
+                s.category, s.pwd, s.qualification, s.pincode, `"${s.address}"`, s.registeredAt
+            ].join(",");
+            csvContent += row + "\r\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "elevare_students_database.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function closeAdminPanel() {
+        showStep('stepIdLogin');
     }
 
     function adminDeleteStudent(elevId) {
-        if (confirm("Are you sure you want to delete student ID " + elevId + "?")) {
+        if (confirm("ARE YOU SURE YOU WANT TO DELETE STUDENT ID " + elevId + "?")) {
             let studentsList = JSON.parse(localStorage.getItem("elevare_all_students") || "[]");
             studentsList = studentsList.filter(s => s.elevId !== elevId);
             localStorage.setItem("elevare_all_students", JSON.stringify(studentsList));
-            alert("Student ID successfully deleted from database.");
+            alert("STUDENT ID SUCCESSFULLY DELETED FROM DATABASE.");
             openAdminPanel(); 
         }
     }
 
     function logoutUser() {
-        if (confirm("Are you sure you want to logout?")) {
+        if (confirm("ARE YOU SURE YOU WANT TO LOGOUT?")) {
             localStorage.removeItem("elevare_logged_in_id");
             location.reload();
         }
