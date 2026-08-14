@@ -3,65 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elevare - Live Government & PSU Jobs</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Elevare - Live Govt & PSU Jobs</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f6f9; color: #333; }
+        header { background: #0066cc; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
+        .container { max-width: 600px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        select, button { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { background: #0066cc; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #004999; }
+        .job-card { background: #fff; border: 1px solid #ddd; border-left: 5px solid #0066cc; padding: 15px; margin-bottom: 15px; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .dept { font-size: 12px; background: #eef2f7; color: #0066cc; padding: 3px 8px; border-radius: 4px; display: inline-block; font-weight: bold; margin-bottom: 5px; }
+        .title { font-size: 16px; font-weight: bold; margin: 5px 0; color: #111; }
+        .details { font-size: 14px; color: #555; margin: 3px 0; }
+        .last-date { color: #d9534f; font-weight: bold; }
+        .apply-btn { display: inline-block; margin-top: 10px; background: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 14px; }
+        .apply-btn:hover { background: #218838; }
+        #loading { text-align: center; color: #666; font-style: italic; }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
-    <header class="bg-blue-600 text-white p-4 shadow-md">
-        <h1 class="text-xl font-bold text-center">Elevare - Live Govt & PSU Jobs</h1>
-    </header>
+<body>
 
-    <main class="max-w-xl mx-auto p-4 flex-grow w-full">
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-4">
-            <div>
-                <label class="block text-sm font-medium mb-1">Qualification</label>
-                <select id="qualification" class="w-full p-2 border border-slate-300 rounded-lg">
-                    <option value="">Select Qualification</option>
-                    <option value="8th Pass">8th Pass</option>
-                    <option value="10th Pass">10th Pass</option>
-                    <option value="12th Pass">12th Pass</option>
-                    <option value="ITI / Diploma">ITI / Diploma</option>
-                    <option value="Graduate / Any Degree">Graduate / Any Degree</option>
-                </select>
-            </div>
-            <button onclick="findJobs()" class="w-full bg-blue-600 text-white p-2 rounded-lg font-semibold hover:bg-blue-700">Find Matching Jobs</button>
-        </div>
+<header>Elevare - Live Govt & PSU Jobs</header>
 
-        <div id="results" class="mt-6 space-y-4"></div>
-    </main>
+<div class="container">
+    <label for="qualSelect">Select Qualification:</label>
+    <select id="qualSelect">
+        <option value="All">All Qualifications (Show All)</option>
+        <option value="8th Pass">8th Pass</option>
+        <option value="10th Pass">10th Pass</option>
+        <option value="12th Pass">12th Pass</option>
+        <option value="ITI / Diploma">ITI / Diploma</option>
+        <option value="Graduate / Any Degree">Graduate / Any Degree</option>
+    </select>
+    
+    <button onclick="filterJobs()">Find Matching Jobs</button>
+</div>
 
-    <script>
-        let allJobs = [];
-        fetch('jobs.json')
-            .then(res => res.json())
-            .then(data => { allJobs = data; })
-            .catch(err => console.error("Error loading jobs:", err));
+<div class="container" id="resultsContainer">
+    <div id="loading">Loading live job listings...</div>
+</div>
 
-        function findJobs() {
-            const selectedQual = document.getElementById('qualification').value;
-            const container = document.getElementById('results');
-            container.innerHTML = '';
+<script>
+    let allJobs = [];
 
-            const filtered = allJobs.filter(job => !selectedQual || job.qual === selectedQual);
+    fetch('jobs.json?v=' + new Date().getTime())
+        .then(response => response.json())
+        .then(data => {
+            allJobs = data;
+            displayJobs(allJobs); // Display all jobs by default on load
+        })
+        .catch(error => {
+            document.getElementById('resultsContainer').innerHTML = '<p style="color:red; text-align:center;">Failed to load job listings. Please try again later.</p>';
+            console.error('Error loading jobs:', error);
+        });
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<p class="text-center text-slate-500">No matching live listings found.</p>';
-                return;
-            }
+    function displayJobs(jobs) {
+        const container = document.getElementById('resultsContainer');
+        container.innerHTML = '';
 
-            filtered.forEach(job => {
-                const card = document.createElement('div');
-                card.className = 'bg-white p-4 rounded-xl shadow-sm border border-slate-200 space-y-2';
-                card.innerHTML = `
-                    <span class="text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-700 rounded">${job.dept || 'Government Job'}</span>
-                    <h3 class="font-bold text-slate-900">${job.title}</h3>
-                    <p class="text-sm text-slate-600">Qualification: <b>${job.qual || 'Check Notice'}</b></p>
-                    <p class="text-sm text-red-600 font-semibold">Last Date: ${job.last_date || 'Check Official Notice'}</p>
-                    <a href="${job.link}" target="_blank" class="inline-block text-sm text-blue-600 font-medium hover:underline">Official Notification & Apply →</a>
-                `;
-                container.appendChild(card);
-            });
+        if (jobs.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:#777;">No matching live listings found.</p>';
+            return;
         }
-    </script>
+
+        jobs.forEach(job => {
+            const card = document.createElement('div');
+            card.className = 'job-card';
+            card.innerHTML = `
+                <div class="dept">${job.dept}</div>
+                <div class="title">${job.title}</div>
+                <div class="details"><strong>Qualification:</strong> ${job.qual}</div>
+                <div class="details"><strong>Age Limit:</strong> ${job.min} - ${job.max} Years</div>
+                <div class="details"><strong>Last Date:</strong> <span class="last-date">${job.last_date}</span></div>
+                <a href="${job.link}" target="_blank" class="apply-btn">Official Notification & Apply →</a>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function filterJobs() {
+        const selectedQual = document.getElementById('qualSelect').value;
+        if (selectedQual === 'All') {
+            displayJobs(allJobs);
+            return;
+        }
+        const filtered = allJobs.filter(job => job.qual.toLowerCase().trim() === selectedQual.toLowerCase().trim());
+        displayJobs(filtered);
+    }
+</script>
+
 </body>
 </html>
